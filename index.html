@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>مركز ican - منصة تعليمية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* نفس الـ CSS اللي عندك بالكامل، من غير تغيير */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Tahoma', 'Comic Neue', 'Cairo', sans-serif;
+        }
+        body {
+            background: #EFF7FF;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            max-width: 1100px;
+            width: 100%;
+            background-color: #FFFFFF;
+            border-radius: 64px;
+            box-shadow: 0 25px 45px rgba(0, 50, 100, 0.12);
+            overflow: hidden;
+            padding: 40px 30px 50px;
+            transition: all 0.3s ease;
+            border: 1px solid #D6E9FF;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1E6F9F;
+            background: #E3F0FA;
+            display: inline-block;
+            padding: 10px 35px;
+            border-radius: 100px;
+            letter-spacing: -0.5px;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.03);
+        }
+        .header p {
+            color: #2C7AB1;
+            font-size: 1.15rem;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 28px;
+            margin: 25px 0 20px;
+        }
+        .btn {
+            background: #F0F8FF;
+            border: 2px solid #C2E0FF;
+            padding: 24px 12px;
+            border-radius: 48px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1A5D8C;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 0 #CDE5F5;
+        }
+        .btn i {
+            font-size: 2.2rem;
+            color: #2E86C1;
+        }
+        .btn:hover {
+            transform: translateY(-4px);
+            background: #E6F2FB;
+            border-color: #AAD0FF;
+            box-shadow: 0 12px 0 #B8D9F0;
+        }
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #CDE5F5;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(30, 111, 159, 0.15);
+            backdrop-filter: blur(6px);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background-color: #FFFFFF;
+            max-width: 420px;
+            width: 85%;
+            padding: 35px 25px;
+            border-radius: 56px;
+            text-align: center;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.1);
+            border: 1px solid #B8D9FF;
+            animation: bounceSoft 0.3s ease;
+        }
+        @keyframes bounceSoft {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .modal-content h2 {
+            color: #1E6F9F;
+            font-size: 1.9rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 14px 18px;
+            margin: 12px 0;
+            border: 2px solid #CAE3FF;
+            border-radius: 60px;
+            font-size: 1rem;
+            background: #FDFEFF;
+            outline: none;
+            transition: 0.2s;
+        }
+        .modal-content input:focus {
+            border-color: #5BA3D9;
+            box-shadow: 0 0 0 3px rgba(91, 163, 217, 0.2);
+        }
+        .modal-content button {
+            background: #D9EEFF;
+            color: #1C5A7F;
+            border: none;
+            padding: 14px 20px;
+            width: 100%;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .modal-content button:hover {
+            background: #C2E2FF;
+            color: #0F4665;
+        }
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #5B9BD5;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            background: #EFF7FF;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .close-modal:hover {
+            background: #DFEEFC;
+            color: #1A5D8C;
+        }
+        .message {
+            margin-top: 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: #6A9FC7;
+            border-top: 1px solid #E3F0FA;
+            padding-top: 25px;
+        }
+        @media (max-width: 550px) {
+            .card { padding: 25px 18px; }
+            .btn { padding: 18px 8px; font-size: 1.1rem; }
+            .btn i { font-size: 1.8rem; }
+            .header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <h1>🌸 مركز ican 🌸</h1>
+        <p>▶︎ نتعلم ونلعب ونكبر سوا ◀︎</p>
+    </div>
+
+    <!-- الأزرار الأصلية (تظهر للجميع) -->
+    <div class="buttons-grid" id="publicButtons">
+        <button class="btn" id="adminBtn"><i class="fas fa-chalkboard-user"></i> الإدارة</button>
+        <button class="btn" id="coursesBtn"><i class="fas fa-book-open"></i> كورسات</button>
+        <button class="btn" id="jobBtn"><i class="fas fa-paper-plane"></i> تقديم وظيفة</button>
+        <button class="btn" id="contactBtn"><i class="fas fa-heart"></i> تواصل معنا</button>
+    </div>
+
+    <!-- لوحة المدير (تظهر فقط بعد تسجيل الدخول) -->
+    <div id="adminPanel" style="display: none;">
+        <div style="text-align: center; margin: 20px 0 10px;">
+            <h3 style="color: #1E6F9F;">👋 مرحباً مدير المركز</h3>
+            <p style="color: #2C7AB1;">اختر ما تريد إدارته</p>
+        </div>
+        <div class="buttons-grid">
+            <button class="btn" id="manageCoursesBtn"><i class="fas fa-book"></i> الكورسات</button>
+            <button class="btn" id="manageJobsBtn"><i class="fas fa-briefcase"></i> التقديم على وظيفة</button>
+            <button class="btn" id="manageContactBtn"><i class="fas fa-envelope"></i> التواصل</button>
+        </div>
+        <button id="logoutBtn" style="margin-top: 20px; background: #FFDDDD; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; color: #B33; display: block; margin-left: auto; margin-right: auto;">🚪 تسجيل خروج</button>
+    </div>
+
+    <footer>♥ نرحب بأطفالنا وأهلنا الأعزاء ♥</footer>
+</div>
+
+<!-- مودال تسجيل الدخول -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <div class="close-modal" id="closeModalBtn">✖</div>
+        <h2><i class="fas fa-lock"></i> دخول المدير</h2>
+        <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" autocomplete="email">
+        <input type="password" id="loginPassword" placeholder="كلمة المرور">
+        <button id="loginSubmitBtn">دخول</button>
+        <div id="loginMessage" class="message"></div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAfx0mHlH54zi85V-9URyX9USq3TE-Aqd0",
+        authDomain: "ican-site.firebaseapp.com",
+        projectId: "ican-site",
+        storageBucket: "ican-site.firebasestorage.app",
+        messagingSenderId: "685331507801",
+        appId: "1:685331507801:web:85c8cbf81cd55446681f48",
+        measurementId: "G-6BVVCZTKRW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // عناصر الواجهة
+    const publicButtonsGrid = document.getElementById('publicButtons');
+    const adminPanel = document.getElementById('adminPanel');
+    const adminBtn = document.getElementById('adminBtn');
+    const coursesBtn = document.getElementById('coursesBtn');
+    const jobBtn = document.getElementById('jobBtn');
+    const contactBtn = document.getElementById('contactBtn');
+    const loginModal = document.getElementById('loginModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const loginSubmit = document.getElementById('loginSubmitBtn');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginMessage = document.getElementById('loginMessage');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const manageCoursesBtn = document.getElementById('manageCoursesBtn');
+    const manageJobsBtn = document.getElementById('manageJobsBtn');
+    const manageContactBtn = document.getElementById('manageContactBtn');
+
+    function showAdminPanel() {
+        if (publicButtonsGrid) publicButtonsGrid.style.display = 'none';
+        if (adminPanel) adminPanel.style.display = 'block';
+    }
+
+    function showPublicUI() {
+        if (publicButtonsGrid) publicButtonsGrid.style.display = 'grid';
+        if (adminPanel) adminPanel.style.display = 'none';
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log("المدير متصل:", user.email);
+            showAdminPanel();
+        } else {
+            showPublicUI();
+        }
+    });
+
+    adminBtn.addEventListener('click', () => {
+        loginModal.style.display = 'flex';
+        loginMessage.innerHTML = '';
+        loginEmail.value = '';
+        loginPassword.value = '';
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+        loginModal.style.display = 'none';
+    });
+    window.addEventListener('click', (e) => {
+        if (e.target === loginModal) loginModal.style.display = 'none';
+    });
+
+    loginSubmit.addEventListener('click', async () => {
+        const email = loginEmail.value.trim();
+        const password = loginPassword.value.trim();
+        if (!email || !password) {
+            loginMessage.innerText = '❌ من فضلك اكتب البريد وكلمة السر';
+            return;
+        }
+        loginMessage.innerText = '⏳ جاري ...';
+        loginSubmit.disabled = true;
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            loginMessage.style.color = '#2c7a4d';
+            loginMessage.innerText = '✅ تم الدخول! مرحباً مدير المركز';
+            setTimeout(() => {
+                loginModal.style.display = 'none';
+                showAdminPanel();
+            }, 1200);
+        } catch (error) {
+            let errorMsg = '';
+            if (error.code === 'auth/user-not-found') errorMsg = '✖ هذا البريد غير مسجل كمدير';
+            else if (error.code === 'auth/wrong-password') errorMsg = '✖ كلمة المرور خطأ';
+            else errorMsg = '⚠️ فشل الدخول: ' + error.message;
+            loginMessage.style.color = '#d9534f';
+            loginMessage.innerText = errorMsg;
+        } finally {
+            loginSubmit.disabled = false;
+        }
+    });
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            await signOut(auth);
+            alert("تم تسجيل الخروج");
+            showPublicUI();
+        });
+    }
+
+    if (manageCoursesBtn) {
+        manageCoursesBtn.addEventListener('click', () => {
+            alert("📚 إدارة الكورسات: سنضيفها في الخطوة القادمة (إضافة، حذف، تعديل)");
+        });
+    }
+    if (manageJobsBtn) {
+        manageJobsBtn.addEventListener('click', () => {
+            alert("📝 إدارة طلبات الوظائف: سيتم ربطها بـ Firestore قريباً");
+        });
+    }
+    if (manageContactBtn) {
+        manageContactBtn.addEventListener('click', () => {
+            alert("💬 إدارة رسائل التواصل: قيد التطوير");
+        });
+    }
+
+    if (coursesBtn) {
+        coursesBtn.addEventListener('click', () => alert("📚 كورسات المركز: قريباً جداً"));
+    }
+    if (jobBtn) {
+        jobBtn.addEventListener('click', () => alert("📝 قدم على وظيفة: سيتم تفعيل النموذج قريباً"));
+    }
+    if (contactBtn) {
+        contactBtn.addEventListener('click', () => alert("📞 للتواصل مع المركز: جاري ربط الرسائل"));
+    }
+</script>
+</body>
+</html>
