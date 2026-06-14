@@ -432,7 +432,7 @@
     </div>
 </div>
 
-<!-- مودال عرض الوظائف للزوار + نموذج التقديم -->
+<!-- مودال عرض الوظائف للزوار + نموذج التقديم (رقم الهاتف بدلاً من البريد) -->
 <div id="viewJobsModal" class="modal">
     <div class="modal-content">
         <div class="close-modal" id="closeJobsModal">✖</div>
@@ -441,10 +441,10 @@
         <hr style="margin: 20px 0;">
         <h3>📝 قدم على وظيفة</h3>
         <div class="form-group">
-            <input type="text" id="applicantName" placeholder="الاسم كاملاً">
+            <input type="text" id="applicantName" placeholder="الاسم كاملاً (إجباري)" required>
         </div>
         <div class="form-group">
-            <input type="email" id="applicantEmail" placeholder="البريد الإلكتروني">
+            <input type="tel" id="applicantPhone" placeholder="رقم الهاتف (إجباري)" required>
         </div>
         <div class="form-group">
             <select id="selectedJobId">
@@ -452,7 +452,7 @@
             </select>
         </div>
         <div class="form-group">
-            <textarea id="applicantCV" placeholder="رابط السيرة الذاتية (أو نص مختصر)" rows="3"></textarea>
+            <textarea id="applicantCV" placeholder="رابط السيرة الذاتية (أو نص مختصر) إجباري" rows="3" required></textarea>
         </div>
         <button id="submitApplicationBtn" class="submit-btn">إرسال الطلب</button>
         <div id="applicationStatus"></div>
@@ -544,12 +544,14 @@
     const voteComment = document.getElementById('voteComment');
     const submitVoteBtn = document.getElementById('submitVoteBtn');
     const voteStatus = document.getElementById('voteStatus');
+    // نموذج التقديم على وظيفة: اسم + هاتف + الوظيفة + السيرة
     const applicantName = document.getElementById('applicantName');
-    const applicantEmail = document.getElementById('applicantEmail');
+    const applicantPhone = document.getElementById('applicantPhone');
     const selectedJobId = document.getElementById('selectedJobId');
     const applicantCV = document.getElementById('applicantCV');
     const submitApplicationBtn = document.getElementById('submitApplicationBtn');
     const applicationStatus = document.getElementById('applicationStatus');
+    // إرسال رسالة
     const senderName = document.getElementById('senderName');
     const senderEmail = document.getElementById('senderEmail');
     const senderMessage = document.getElementById('senderMessage');
@@ -839,7 +841,7 @@
                     const jobSnap = await getDoc(jobRef);
                     if (jobSnap.exists()) jobTitle = jobSnap.data().title;
                 }
-                html += `<div class="item-card"><div>👤</div><div class="item-info"><strong>${escapeHtml(data.name)}</strong><br>البريد: ${escapeHtml(data.email)}<br>الوظيفة: ${escapeHtml(jobTitle)}<br>السيرة: <a href="${escapeHtml(data.cv)}" target="_blank">${escapeHtml(data.cv)}</a><br><small>${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small></div><button data-id="${docSnap.id}" class="delete-btn delete-app">🗑️ حذف</button></div>`;
+                html += `<div class="item-card"><div>👤</div><div class="item-info"><strong>${escapeHtml(data.name)}</strong><br>الهاتف: ${escapeHtml(data.phone)}<br>الوظيفة: ${escapeHtml(jobTitle)}<br>السيرة: <a href="${escapeHtml(data.cv)}" target="_blank">${escapeHtml(data.cv)}</a><br><small>${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small></div><button data-id="${docSnap.id}" class="delete-btn delete-app">🗑️ حذف</button></div>`;
             }
             applicationsListDiv.innerHTML = html;
             document.querySelectorAll('.delete-app').forEach(btn => btn.addEventListener('click', async () => {
@@ -935,6 +937,35 @@
         });
     });
 
+    // تقديم طلب وظيفة (باستخدام رقم الهاتف)
+    submitApplicationBtn.addEventListener('click', async () => {
+        const name = applicantName.value.trim();
+        const phone = applicantPhone.value.trim();
+        const jobId = selectedJobId.value;
+        const cv = applicantCV.value.trim();
+        if (!name || !phone || !jobId || !cv) {
+            applicationStatus.innerText = '❌ جميع الحقول مطلوبة (الاسم، رقم الهاتف، الوظيفة، السيرة)';
+            return;
+        }
+        try {
+            await addDoc(collection(db, "applications"), {
+                name: name,
+                phone: phone,
+                jobId: jobId,
+                cv: cv,
+                createdAt: new Date()
+            });
+            applicationStatus.innerText = '✅ تم إرسال طلبك بنجاح';
+            applicantName.value = '';
+            applicantPhone.value = '';
+            selectedJobId.value = '';
+            applicantCV.value = '';
+            setTimeout(() => applicationStatus.innerText = '', 3000);
+        } catch (error) {
+            applicationStatus.innerText = '⚠️ حدث خطأ، حاول مرة أخرى';
+        }
+    });
+
     // التنقل في لوحة المدير
     manageCoursesBtn.onclick = () => {
         adminMainButtons.style.display = 'none';
@@ -992,29 +1023,23 @@
     closeRegisterModal.onclick = () => registerCourseModal.style.display = 'none';
     closeVoteModal.onclick = () => voteModal.style.display = 'none';
 
-    // تقديم طلب وظيفة
-    submitApplicationBtn.onclick = async () => {
-        const name = applicantName.value.trim();
-        const email = applicantEmail.value.trim();
-        const jobId = selectedJobId.value;
-        const cv = applicantCV.value.trim();
-        if (!name || !email || !jobId || !cv) { applicationStatus.innerText = '❌ جميع الحقول مطلوبة'; return; }
-        await addDoc(collection(db, "applications"), { name, email, jobId, cv, createdAt: new Date() });
-        applicationStatus.innerText = '✅ تم الإرسال';
-        applicantName.value = ''; applicantEmail.value = ''; selectedJobId.value = ''; applicantCV.value = '';
-        setTimeout(() => applicationStatus.innerText = '', 3000);
-    };
-
-    // إرسال رسالة
+    // إرسال رسالة من الزوار
     sendMessageBtn.onclick = async () => {
         const name = senderName.value.trim();
         const email = senderEmail.value.trim();
         const msg = senderMessage.value.trim();
-        if (!name || !email || !msg) { messageStatus.innerText = '❌ جميع الحقول مطلوبة'; return; }
-        await addDoc(collection(db, "messages"), { name, email, message: msg, createdAt: new Date() });
-        messageStatus.innerText = '✅ تم الإرسال';
-        senderName.value = ''; senderEmail.value = ''; senderMessage.value = '';
-        setTimeout(() => messageStatus.innerText = '', 3000);
+        if (!name || !email || !msg) {
+            messageStatus.innerText = '❌ جميع الحقول مطلوبة';
+            return;
+        }
+        try {
+            await addDoc(collection(db, "messages"), { name, email, message: msg, createdAt: new Date() });
+            messageStatus.innerText = '✅ تم إرسال رسالتك';
+            senderName.value = ''; senderEmail.value = ''; senderMessage.value = '';
+            setTimeout(() => messageStatus.innerText = '', 3000);
+        } catch(e) {
+            messageStatus.innerText = '⚠️ فشل الإرسال';
+        }
     };
 </script>
 </body>
