@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>مركز ican - تقييم الكورسات</title>
+    <title>مركز ican - المنصة المتكاملة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* نفس الـ CSS السابق مع إضافة تنسيقات التقييم بالنجوم */
         * {
             margin: 0;
             padding: 0;
@@ -198,7 +197,6 @@
             border-top: 1px solid #E3F0FA;
             padding-top: 25px;
         }
-        /* تنسيقات لوحة المدير */
         .admin-form {
             background: #F0F8FF;
             padding: 20px;
@@ -267,7 +265,7 @@
         <p>▶︎ نتعلم ونلعب ونكبر سوا ◀︎</p>
     </div>
 
-    <!-- الأزرار العامة (للزوار) -->
+    <!-- الأزرار العامة للزوار -->
     <div class="buttons-grid" id="publicButtons">
         <button class="btn" id="adminBtn"><i class="fas fa-chalkboard-user"></i> الإدارة</button>
         <button class="btn" id="coursesBtn"><i class="fas fa-book-open"></i> كورسات</button>
@@ -275,15 +273,16 @@
         <button class="btn" id="contactBtn"><i class="fas fa-heart"></i> تواصل معنا</button>
     </div>
 
-    <!-- لوحة المدير (تظهر بعد تسجيل الدخول) -->
+    <!-- لوحة المدير -->
     <div id="adminPanel" style="display: none;">
         <div style="text-align: center; margin: 20px 0 10px;">
             <h3 style="color: #1E6F9F;">👋 مرحباً مدير المركز</h3>
             <p style="color: #2C7AB1;">اختر ما تريد إدارته</p>
         </div>
         <div class="buttons-grid" id="adminMainButtons">
-            <button class="btn" id="manageCoursesBtn"><i class="fas fa-book"></i> الكورسات (كل شيء)</button>
-            <button class="btn" id="manageJobsBtn"><i class="fas fa-briefcase"></i> التقديم على وظيفة</button>
+            <button class="btn" id="manageCoursesBtn"><i class="fas fa-book"></i> الكورسات</button>
+            <button class="btn" id="manageJobsBtn"><i class="fas fa-briefcase"></i> الوظائف (إدارة)</button>
+            <button class="btn" id="manageApplicationsBtn"><i class="fas fa-file-alt"></i> طلبات الوظائف</button>
             <button class="btn" id="manageContactBtn"><i class="fas fa-envelope"></i> التواصل</button>
         </div>
         <button id="logoutBtn" style="margin-top: 20px; background: #FFDDDD; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; color: #B33; display: block; margin: 20px auto 0;">🚪 تسجيل خروج</button>
@@ -295,7 +294,6 @@
                 <button class="sub-tab" id="registrationsTab">📋 تسجيلات الطلاب</button>
                 <button class="sub-tab" id="statsTab">📊 إحصائيات الكورسات</button>
             </div>
-            <!-- قسم قائمة الكورسات (إضافة، حذف) -->
             <div id="coursesListSubsection">
                 <h3 style="color: #1E6F9F; text-align: center;">➕ إضافة كورس جديد</h3>
                 <div class="admin-form">
@@ -308,12 +306,10 @@
                 <h3 style="color: #1E6F9F; text-align: center;">📚 قائمة الكورسات</h3>
                 <div id="coursesList"></div>
             </div>
-            <!-- قسم تسجيلات الطلاب -->
             <div id="registrationsSubsection" style="display: none;">
                 <h3 style="color: #1E6F9F; text-align: center;">📋 قائمة الطلاب المسجلين في الكورسات</h3>
                 <div id="registrationsList"></div>
             </div>
-            <!-- قسم الإحصائيات -->
             <div id="statsSubsection" style="display: none;">
                 <h3 style="color: #1E6F9F; text-align: center;">📊 إحصائيات الكورسات (عدد المسجلين + متوسط التقييم)</h3>
                 <div id="statsList"></div>
@@ -321,7 +317,7 @@
             <button class="back-btn" id="backFromCoursesBtn">🔙 رجوع</button>
         </div>
 
-        <!-- قسم الوظائف (للمدير) -->
+        <!-- قسم إدارة الوظائف -->
         <div id="jobsSection" style="display: none; margin-top: 30px;">
             <h3 style="color: #1E6F9F; text-align: center;">➕ إضافة وظيفة جديدة</h3>
             <div class="admin-form">
@@ -335,7 +331,14 @@
             <button class="back-btn" id="backFromJobsBtn">🔙 رجوع</button>
         </div>
 
-        <!-- قسم التواصل (للمدير) - إدارة وسائل التواصل -->
+        <!-- قسم طلبات الوظائف -->
+        <div id="applicationsSection" style="display: none; margin-top: 30px;">
+            <h3 style="color: #1E6F9F; text-align: center;">📋 قائمة المتقدمين على الوظائف</h3>
+            <div id="applicationsList"></div>
+            <button class="back-btn" id="backFromApplicationsBtn">🔙 رجوع</button>
+        </div>
+
+        <!-- قسم التواصل (وسائل التواصل) -->
         <div id="contactsSection" style="display: none; margin-top: 30px;">
             <h3 style="color: #1E6F9F; text-align: center;">➕ إضافة وسيلة تواصل</h3>
             <div class="admin-form">
@@ -372,7 +375,7 @@
     </div>
 </div>
 
-<!-- مودال عرض الكورسات للزوار مع زر تسجيل وتصويت -->
+<!-- مودال عرض الكورسات للزوار -->
 <div id="viewCoursesModal" class="modal">
     <div class="modal-content">
         <div class="close-modal" id="closeCoursesModal">✖</div>
@@ -381,7 +384,7 @@
     </div>
 </div>
 
-<!-- مودال تسجيل الطالب في كورس (الهاتف إجباري، البريد اختياري) -->
+<!-- مودال تسجيل الطالب في كورس (الهاتف إجباري) -->
 <div id="registerCourseModal" class="modal">
     <div class="modal-content">
         <div class="close-modal" id="closeRegisterModal">✖</div>
@@ -429,7 +432,7 @@
     </div>
 </div>
 
-<!-- مودال عرض الوظائف للزوار مع نموذج التقديم -->
+<!-- مودال عرض الوظائف للزوار + نموذج التقديم -->
 <div id="viewJobsModal" class="modal">
     <div class="modal-content">
         <div class="close-modal" id="closeJobsModal">✖</div>
@@ -456,7 +459,7 @@
     </div>
 </div>
 
-<!-- مودال عرض وسائل التواصل للزوار وإرسال رسالة -->
+<!-- مودال عرض وسائل التواصل للزوار + إرسال رسالة -->
 <div id="viewContactModal" class="modal">
     <div class="modal-content">
         <div class="close-modal" id="closeContactModal">✖</div>
@@ -483,6 +486,7 @@
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    // إعدادات Firebase (استخدم بيانات مشروعك)
     const firebaseConfig = {
         apiKey: "AIzaSyAfx0mHlH54zi85V-9URyX9USq3TE-Aqd0",
         authDomain: "ican-site.firebaseapp.com",
@@ -531,8 +535,6 @@
     const confirmRegistrationBtn = document.getElementById('confirmRegistrationBtn');
     const regStatus = document.getElementById('regStatus');
     const registerCourseTitle = document.getElementById('registerCourseTitle');
-
-    // مودال التصويت
     const voteModal = document.getElementById('voteModal');
     const closeVoteModal = document.getElementById('closeVoteModal');
     const voteCourseTitle = document.getElementById('voteCourseTitle');
@@ -542,37 +544,37 @@
     const voteComment = document.getElementById('voteComment');
     const submitVoteBtn = document.getElementById('submitVoteBtn');
     const voteStatus = document.getElementById('voteStatus');
-
-    // عناصر التقديم على وظيفة
     const applicantName = document.getElementById('applicantName');
     const applicantEmail = document.getElementById('applicantEmail');
     const selectedJobId = document.getElementById('selectedJobId');
     const applicantCV = document.getElementById('applicantCV');
     const submitApplicationBtn = document.getElementById('submitApplicationBtn');
     const applicationStatus = document.getElementById('applicationStatus');
-
-    // عناصر إرسال رسالة
     const senderName = document.getElementById('senderName');
     const senderEmail = document.getElementById('senderEmail');
     const senderMessage = document.getElementById('senderMessage');
     const sendMessageBtn = document.getElementById('sendMessageBtn');
     const messageStatus = document.getElementById('messageStatus');
 
-    // ======================== عناصر لوحة المدير ========================
+    // عناصر لوحة المدير
     const manageCoursesBtn = document.getElementById('manageCoursesBtn');
     const manageJobsBtn = document.getElementById('manageJobsBtn');
+    const manageApplicationsBtn = document.getElementById('manageApplicationsBtn');
     const manageContactBtn = document.getElementById('manageContactBtn');
     const adminMainButtons = document.getElementById('adminMainButtons');
     const coursesSection = document.getElementById('coursesSection');
     const jobsSection = document.getElementById('jobsSection');
+    const applicationsSection = document.getElementById('applicationsSection');
     const contactsSection = document.getElementById('contactsSection');
     const backFromCoursesBtn = document.getElementById('backFromCoursesBtn');
     const backFromJobsBtn = document.getElementById('backFromJobsBtn');
+    const backFromApplicationsBtn = document.getElementById('backFromApplicationsBtn');
     const backFromContactsBtn = document.getElementById('backFromContactsBtn');
     const coursesListDiv = document.getElementById('coursesList');
     const jobsListDiv = document.getElementById('jobsList');
     const contactsListDiv = document.getElementById('contactsList');
     const registrationsListDiv = document.getElementById('registrationsList');
+    const applicationsListDiv = document.getElementById('applicationsList');
     const addCourseBtn = document.getElementById('addCourseBtn');
     const addJobBtn = document.getElementById('addJobBtn');
     const addContactBtn = document.getElementById('addContactBtn');
@@ -586,7 +588,7 @@
     const statsTab = document.getElementById('statsTab');
     const statsListDiv = document.getElementById('statsList');
 
-    // ======================== دوال مساعدة ========================
+    // دوال مساعدة
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -602,6 +604,7 @@
         adminPanel.style.display = 'block';
         coursesSection.style.display = 'none';
         jobsSection.style.display = 'none';
+        applicationsSection.style.display = 'none';
         contactsSection.style.display = 'none';
         adminMainButtons.style.display = 'grid';
     }
@@ -611,7 +614,7 @@
         adminPanel.style.display = 'none';
     }
 
-    // ======================== دوال عرض البيانات للزوار ========================
+    // عرض الكورسات للزوار
     async function displayCoursesPublic() {
         publicCoursesList.innerHTML = '<div style="text-align:center;">⏳ جاري التحميل...</div>';
         try {
@@ -626,7 +629,7 @@
                 const data = docSnap.data();
                 const courseId = docSnap.id;
                 html += `
-                    <div class="public-card" data-course-id="${courseId}">
+                    <div class="public-card">
                         <div style="display:flex; gap:10px; align-items:center;">
                             ${data.imageUrl ? `<img src="${data.imageUrl}" style="width:60px; height:60px; border-radius:16px; object-fit:cover;">` : '<div style="font-size:2rem;">📘</div>'}
                             <div style="flex:1">
@@ -697,13 +700,7 @@
             let options = '<option value="">اختر الوظيفة</option>';
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
-                html += `
-                    <div class="public-card">
-                        <h3>${escapeHtml(data.title)}</h3>
-                        <p>${escapeHtml(data.requirements)}</p>
-                        <strong>📅 آخر موعد: ${escapeHtml(data.deadline)}</strong>
-                    </div>
-                `;
+                html += `<div class="public-card"><h3>${escapeHtml(data.title)}</h3><p>${escapeHtml(data.requirements)}</p><strong>📅 آخر موعد: ${escapeHtml(data.deadline)}</strong></div>`;
                 options += `<option value="${docSnap.id}">${escapeHtml(data.title)}</option>`;
             });
             publicJobsList.innerHTML = html;
@@ -748,7 +745,7 @@
         }
     }
 
-    // ======================== دوال المدير ========================
+    // دوال المدير
     async function loadCourses() {
         coursesListDiv.innerHTML = '⏳ جاري التحميل...';
         try {
@@ -758,13 +755,7 @@
             let html = '';
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
-                html += `
-                    <div class="item-card">
-                        ${data.imageUrl ? `<img src="${data.imageUrl}" style="width:60px;height:60px;border-radius:16px;">` : '<div>📘</div>'}
-                        <div class="item-info"><strong>${escapeHtml(data.title)}</strong><br>${escapeHtml(data.description)}<br>💰 ${escapeHtml(data.price)}</div>
-                        <button data-id="${docSnap.id}" class="delete-btn delete-course">🗑️ حذف</button>
-                    </div>
-                `;
+                html += `<div class="item-card">${data.imageUrl ? `<img src="${data.imageUrl}" style="width:60px;height:60px;border-radius:16px;">` : '<div>📘</div>'}<div class="item-info"><strong>${escapeHtml(data.title)}</strong><br>${escapeHtml(data.description)}<br>💰 ${escapeHtml(data.price)}</div><button data-id="${docSnap.id}" class="delete-btn delete-course">🗑️ حذف</button></div>`;
             });
             coursesListDiv.innerHTML = html;
             document.querySelectorAll('.delete-course').forEach(btn => btn.addEventListener('click', async () => {
@@ -814,7 +805,7 @@
         try {
             const q = query(collection(db, "courseRegistrations"), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
-            if (snapshot.empty) { registrationsListDiv.innerHTML = '<p>لا توجد تسجيلات حتى الآن</p>'; return; }
+            if (snapshot.empty) { registrationsListDiv.innerHTML = '<p>لا توجد تسجيلات</p>'; return; }
             let html = '';
             for (const docSnap of snapshot.docs) {
                 const data = docSnap.data();
@@ -824,43 +815,48 @@
                     const courseSnap = await getDoc(courseRef);
                     if (courseSnap.exists()) courseTitle = courseSnap.data().title;
                 }
-                html += `
-                    <div class="item-card">
-                        <div>📋</div>
-                        <div class="item-info">
-                            <strong>${escapeHtml(data.studentName)}</strong><br>
-                            الهاتف: ${escapeHtml(data.studentPhone)}<br>
-                            البريد: ${escapeHtml(data.studentEmail || 'غير موجود')}<br>
-                            الكورس: ${escapeHtml(courseTitle)}<br>
-                            ملاحظات: ${escapeHtml(data.note || 'لا توجد')}<br>
-                            <small>تاريخ التسجيل: ${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small>
-                        </div>
-                        <button data-id="${docSnap.id}" class="delete-btn delete-reg">🗑️ حذف</button>
-                    </div>
-                `;
+                html += `<div class="item-card"><div>📋</div><div class="item-info"><strong>${escapeHtml(data.studentName)}</strong><br>الهاتف: ${escapeHtml(data.studentPhone)}<br>البريد: ${escapeHtml(data.studentEmail || 'غير موجود')}<br>الكورس: ${escapeHtml(courseTitle)}<br>ملاحظات: ${escapeHtml(data.note || 'لا توجد')}<br><small>${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small></div><button data-id="${docSnap.id}" class="delete-btn delete-reg">🗑️ حذف</button></div>`;
             }
             registrationsListDiv.innerHTML = html;
             document.querySelectorAll('.delete-reg').forEach(btn => btn.addEventListener('click', async () => {
                 if (confirm('حذف هذا التسجيل؟')) { await deleteDoc(doc(db, "courseRegistrations", btn.dataset.id)); loadRegistrations(); }
             }));
-        } catch(e) { registrationsListDiv.innerHTML = '<p style="color:red;">خطأ في تحميل التسجيلات</p>'; console.error(e); }
+        } catch(e) { registrationsListDiv.innerHTML = '<p style="color:red;">خطأ</p>'; }
+    }
+
+    async function loadApplications() {
+        applicationsListDiv.innerHTML = '⏳ جاري التحميل...';
+        try {
+            const q = query(collection(db, "applications"), orderBy("createdAt", "desc"));
+            const snapshot = await getDocs(q);
+            if (snapshot.empty) { applicationsListDiv.innerHTML = '<p>لا توجد طلبات</p>'; return; }
+            let html = '';
+            for (const docSnap of snapshot.docs) {
+                const data = docSnap.data();
+                let jobTitle = 'وظيفة غير معروفة';
+                if (data.jobId) {
+                    const jobRef = doc(db, "jobs", data.jobId);
+                    const jobSnap = await getDoc(jobRef);
+                    if (jobSnap.exists()) jobTitle = jobSnap.data().title;
+                }
+                html += `<div class="item-card"><div>👤</div><div class="item-info"><strong>${escapeHtml(data.name)}</strong><br>البريد: ${escapeHtml(data.email)}<br>الوظيفة: ${escapeHtml(jobTitle)}<br>السيرة: <a href="${escapeHtml(data.cv)}" target="_blank">${escapeHtml(data.cv)}</a><br><small>${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small></div><button data-id="${docSnap.id}" class="delete-btn delete-app">🗑️ حذف</button></div>`;
+            }
+            applicationsListDiv.innerHTML = html;
+            document.querySelectorAll('.delete-app').forEach(btn => btn.addEventListener('click', async () => {
+                if (confirm('حذف هذا الطلب؟')) { await deleteDoc(doc(db, "applications", btn.dataset.id)); loadApplications(); }
+            }));
+        } catch(e) { applicationsListDiv.innerHTML = '<p style="color:red;">خطأ</p>'; }
     }
 
     async function showStatistics() {
-        statsListDiv.innerHTML = '<div style="text-align:center;">⏳ جاري تحميل الإحصائيات...</div>';
+        statsListDiv.innerHTML = '<div style="text-align:center;">⏳ جاري التحميل...</div>';
         try {
             const coursesSnapshot = await getDocs(collection(db, "courses"));
-            if (coursesSnapshot.empty) {
-                statsListDiv.innerHTML = '<p style="color:gray;">لا توجد كورسات</p>';
-                return;
-            }
+            if (coursesSnapshot.empty) { statsListDiv.innerHTML = '<p>لا توجد كورسات</p>'; return; }
             const regSnapshot = await getDocs(collection(db, "courseRegistrations"));
-            const registrations = [];
-            regSnapshot.forEach(doc => registrations.push(doc.data()));
+            const registrations = regSnapshot.docs.map(doc => doc.data());
             const ratingsSnapshot = await getDocs(collection(db, "ratings"));
-            const ratings = [];
-            ratingsSnapshot.forEach(doc => ratings.push(doc.data()));
-
+            const ratings = ratingsSnapshot.docs.map(doc => doc.data());
             let html = '';
             for (const courseDoc of coursesSnapshot.docs) {
                 const course = courseDoc.data();
@@ -868,20 +864,13 @@
                 const count = registrations.filter(reg => reg.courseId === courseId).length;
                 const courseRatings = ratings.filter(r => r.courseId === courseId);
                 const avgRating = courseRatings.length > 0 ? (courseRatings.reduce((sum, r) => sum + r.rating, 0) / courseRatings.length).toFixed(1) : 'لا توجد تقييمات';
-                html += `
-                    <div class="stats-card">
-                        <div><strong>${escapeHtml(course.title)}</strong></div>
-                        <div>👨‍🎓 المسجلين: ${count} &nbsp; | ⭐ التقييم: ${avgRating}</div>
-                    </div>
-                `;
+                html += `<div class="stats-card"><div><strong>${escapeHtml(course.title)}</strong></div><div>👨‍🎓 المسجلين: ${count} | ⭐ التقييم: ${avgRating}</div></div>`;
             }
             statsListDiv.innerHTML = html;
-        } catch (error) {
-            statsListDiv.innerHTML = '<p style="color:red;">فشل تحميل الإحصائيات</p>';
-        }
+        } catch(e) { statsListDiv.innerHTML = '<p style="color:red;">خطأ</p>'; }
     }
 
-    // إضافة كورس
+    // إضافة البيانات
     addCourseBtn.addEventListener('click', async () => {
         const title = document.getElementById('courseTitle').value.trim();
         const desc = document.getElementById('courseDesc').value.trim();
@@ -915,126 +904,59 @@
         loadContacts();
     });
 
-    // تأكيد تسجيل طالب في كورس
     confirmRegistrationBtn.addEventListener('click', async () => {
         const courseId = selectedCourseId.value;
         const name = studentName.value.trim();
         const phone = studentPhone.value.trim();
         const email = studentEmail.value.trim();
         const note = studentNote.value.trim();
-        if (!name || !phone) {
-            regStatus.innerText = '❌ الاسم ورقم الهاتف مطلوبان';
-            return;
-        }
-        try {
-            await addDoc(collection(db, "courseRegistrations"), {
-                courseId,
-                studentName: name,
-                studentPhone: phone,
-                studentEmail: email,
-                note,
-                createdAt: new Date()
-            });
-            regStatus.innerText = '✅ تم التسجيل بنجاح! سيتم التواصل معك قريباً.';
-            setTimeout(() => registerCourseModal.style.display = 'none', 2000);
-        } catch (err) {
-            regStatus.innerText = '⚠️ حدث خطأ، حاول مرة أخرى';
-        }
+        if (!name || !phone) { regStatus.innerText = '❌ الاسم ورقم الهاتف مطلوبان'; return; }
+        await addDoc(collection(db, "courseRegistrations"), { courseId, studentName: name, studentPhone: phone, studentEmail: email, note, createdAt: new Date() });
+        regStatus.innerText = '✅ تم التسجيل';
+        setTimeout(() => registerCourseModal.style.display = 'none', 2000);
     });
 
-    // إرسال التقييم
     submitVoteBtn.addEventListener('click', async () => {
         const courseId = voteCourseId.value;
         const rating = parseInt(ratingValue.value);
         const comment = voteComment.value.trim();
-        if (!rating || rating < 1 || rating > 5) {
-            voteStatus.innerText = '❌ الرجاء اختيار تقييم بالنجوم';
-            return;
-        }
-        try {
-            await addDoc(collection(db, "ratings"), {
-                courseId,
-                rating,
-                comment,
-                createdAt: new Date()
-            });
-            voteStatus.innerText = '✅ شكراً لك، تم تسجيل تقييمك';
-            setTimeout(() => voteModal.style.display = 'none', 2000);
-        } catch (err) {
-            voteStatus.innerText = '⚠️ حدث خطأ، حاول مرة أخرى';
-        }
+        if (!rating || rating < 1 || rating > 5) { voteStatus.innerText = '❌ اختر تقييماً'; return; }
+        await addDoc(collection(db, "ratings"), { courseId, rating, comment, createdAt: new Date() });
+        voteStatus.innerText = '✅ شكراً';
+        setTimeout(() => voteModal.style.display = 'none', 2000);
     });
 
-    // نجوم التقييم
     starSpans.forEach(span => {
         span.addEventListener('click', () => {
-            const value = parseInt(span.getAttribute('data-value'));
-            ratingValue.value = value;
+            const val = parseInt(span.dataset.value);
+            ratingValue.value = val;
             starSpans.forEach(s => s.classList.remove('active'));
-            for (let i = 0; i < value; i++) {
-                starSpans[i].classList.add('active');
-            }
+            for (let i = 0; i < val; i++) starSpans[i].classList.add('active');
         });
     });
 
-    // أزرار التنقل للمدير داخل قسم الكورسات
+    // التنقل في لوحة المدير
     manageCoursesBtn.onclick = () => {
         adminMainButtons.style.display = 'none';
         coursesSection.style.display = 'block';
         coursesListSubsection.style.display = 'block';
         registrationsSubsection.style.display = 'none';
         statsSubsection.style.display = 'none';
-        // تفعيل التبويب النشط
-        coursesListTab.classList.add('active');
-        registrationsTab.classList.remove('active');
-        statsTab.classList.remove('active');
-        loadCourses();
-        loadRegistrations(); // تحميل البيانات تحسباً
-        showStatistics();
+        coursesListTab.classList.add('active'); registrationsTab.classList.remove('active'); statsTab.classList.remove('active');
+        loadCourses(); loadRegistrations(); showStatistics();
     };
-    coursesListTab.onclick = () => {
-        coursesListSubsection.style.display = 'block';
-        registrationsSubsection.style.display = 'none';
-        statsSubsection.style.display = 'none';
-        coursesListTab.classList.add('active');
-        registrationsTab.classList.remove('active');
-        statsTab.classList.remove('active');
-        loadCourses();
-    };
-    registrationsTab.onclick = () => {
-        coursesListSubsection.style.display = 'none';
-        registrationsSubsection.style.display = 'block';
-        statsSubsection.style.display = 'none';
-        registrationsTab.classList.add('active');
-        coursesListTab.classList.remove('active');
-        statsTab.classList.remove('active');
-        loadRegistrations();
-    };
-    statsTab.onclick = () => {
-        coursesListSubsection.style.display = 'none';
-        registrationsSubsection.style.display = 'none';
-        statsSubsection.style.display = 'block';
-        statsTab.classList.add('active');
-        coursesListTab.classList.remove('active');
-        registrationsTab.classList.remove('active');
-        showStatistics();
-    };
-    backFromCoursesBtn.onclick = () => {
-        coursesSection.style.display = 'none';
-        adminMainButtons.style.display = 'grid';
-    };
-    backFromJobsBtn.onclick = () => {
-        jobsSection.style.display = 'none';
-        adminMainButtons.style.display = 'grid';
-    };
-    backFromContactsBtn.onclick = () => {
-        contactsSection.style.display = 'none';
-        adminMainButtons.style.display = 'grid';
-    };
+    coursesListTab.onclick = () => { coursesListSubsection.style.display = 'block'; registrationsSubsection.style.display = 'none'; statsSubsection.style.display = 'none'; coursesListTab.classList.add('active'); registrationsTab.classList.remove('active'); statsTab.classList.remove('active'); loadCourses(); };
+    registrationsTab.onclick = () => { coursesListSubsection.style.display = 'none'; registrationsSubsection.style.display = 'block'; statsSubsection.style.display = 'none'; registrationsTab.classList.add('active'); coursesListTab.classList.remove('active'); statsTab.classList.remove('active'); loadRegistrations(); };
+    statsTab.onclick = () => { coursesListSubsection.style.display = 'none'; registrationsSubsection.style.display = 'none'; statsSubsection.style.display = 'block'; statsTab.classList.add('active'); coursesListTab.classList.remove('active'); registrationsTab.classList.remove('active'); showStatistics(); };
+    backFromCoursesBtn.onclick = () => { coursesSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
     manageJobsBtn.onclick = () => { adminMainButtons.style.display = 'none'; jobsSection.style.display = 'block'; loadJobs(); };
+    backFromJobsBtn.onclick = () => { jobsSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
+    manageApplicationsBtn.onclick = () => { adminMainButtons.style.display = 'none'; applicationsSection.style.display = 'block'; loadApplications(); };
+    backFromApplicationsBtn.onclick = () => { applicationsSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
     manageContactBtn.onclick = () => { adminMainButtons.style.display = 'none'; contactsSection.style.display = 'block'; loadContacts(); };
+    backFromContactsBtn.onclick = () => { contactsSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
 
-    // ======================== المصادقة ========================
+    // المصادقة
     onAuthStateChanged(auth, (user) => { if (user) showAdminPanel(); else showPublicUI(); });
     adminBtn.onclick = () => { loginModal.style.display = 'flex'; loginMessage.innerHTML = ''; };
     closeModalBtn.onclick = () => loginModal.style.display = 'none';
@@ -1051,8 +973,11 @@
         if (!email || !pwd) return loginMessage.innerText = 'أدخل البريد وكلمة السر';
         loginMessage.innerText = 'جاري...';
         loginSubmit.disabled = true;
-        try { await signInWithEmailAndPassword(auth, email, pwd); loginMessage.innerText = 'تم الدخول'; setTimeout(() => loginModal.style.display = 'none', 1200); }
-        catch (err) { loginMessage.innerText = err.code === 'auth/user-not-found' ? 'غير مسجل' : 'كلمة مرور خاطئة'; }
+        try {
+            await signInWithEmailAndPassword(auth, email, pwd);
+            loginMessage.innerText = 'تم الدخول';
+            setTimeout(() => loginModal.style.display = 'none', 1200);
+        } catch(err) { loginMessage.innerText = err.code === 'auth/user-not-found' ? 'غير مسجل' : 'كلمة مرور خاطئة'; }
         finally { loginSubmit.disabled = false; }
     };
     logoutBtn.onclick = async () => { await signOut(auth); alert('تم الخروج'); };
@@ -1074,26 +999,22 @@
         const jobId = selectedJobId.value;
         const cv = applicantCV.value.trim();
         if (!name || !email || !jobId || !cv) { applicationStatus.innerText = '❌ جميع الحقول مطلوبة'; return; }
-        try {
-            await addDoc(collection(db, "applications"), { name, email, jobId, cv, createdAt: new Date() });
-            applicationStatus.innerText = '✅ تم إرسال طلبك';
-            applicantName.value = ''; applicantEmail.value = ''; selectedJobId.value = ''; applicantCV.value = '';
-            setTimeout(() => applicationStatus.innerText = '', 3000);
-        } catch(e) { applicationStatus.innerText = '⚠️ حدث خطأ'; }
+        await addDoc(collection(db, "applications"), { name, email, jobId, cv, createdAt: new Date() });
+        applicationStatus.innerText = '✅ تم الإرسال';
+        applicantName.value = ''; applicantEmail.value = ''; selectedJobId.value = ''; applicantCV.value = '';
+        setTimeout(() => applicationStatus.innerText = '', 3000);
     };
 
-    // إرسال رسالة من الزوار
+    // إرسال رسالة
     sendMessageBtn.onclick = async () => {
         const name = senderName.value.trim();
         const email = senderEmail.value.trim();
         const msg = senderMessage.value.trim();
         if (!name || !email || !msg) { messageStatus.innerText = '❌ جميع الحقول مطلوبة'; return; }
-        try {
-            await addDoc(collection(db, "messages"), { name, email, message: msg, createdAt: new Date() });
-            messageStatus.innerText = '✅ تم إرسال رسالتك';
-            senderName.value = ''; senderEmail.value = ''; senderMessage.value = '';
-            setTimeout(() => messageStatus.innerText = '', 3000);
-        } catch(e) { messageStatus.innerText = '⚠️ فشل الإرسال'; }
+        await addDoc(collection(db, "messages"), { name, email, message: msg, createdAt: new Date() });
+        messageStatus.innerText = '✅ تم الإرسال';
+        senderName.value = ''; senderEmail.value = ''; senderMessage.value = '';
+        setTimeout(() => messageStatus.innerText = '', 3000);
     };
 </script>
 </body>
