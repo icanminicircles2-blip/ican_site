@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>مركز ican - تسجيل في الكورسات</title>
+    <title>مركز ican - تقييم الكورسات</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* نفس الـ CSS السابق مع إضافة تنسيقات التقييم بالنجوم */
         * {
             margin: 0;
             padding: 0;
@@ -151,7 +152,7 @@
             padding: 15px;
             position: relative;
         }
-        .register-btn {
+        .register-btn, .vote-btn {
             background: #2E86C1;
             color: white;
             border: none;
@@ -160,6 +161,24 @@
             cursor: pointer;
             margin-top: 10px;
             display: inline-block;
+            margin-left: 8px;
+        }
+        .vote-btn {
+            background: #28a745;
+        }
+        .stars {
+            direction: ltr;
+            unicode-bidi: bidi-override;
+            color: #ddd;
+            font-size: 1.5rem;
+            display: inline-block;
+        }
+        .stars span {
+            cursor: pointer;
+            display: inline-block;
+        }
+        .stars span:hover, .stars span.active {
+            color: #ffc107;
         }
         .contact-badge {
             display: inline-flex;
@@ -212,13 +231,27 @@
             cursor: pointer;
             color: #B33;
         }
-        .back-btn {
+        .back-btn, .sub-tab {
             margin-top: 20px;
             background: #DDD;
             border: none;
             padding: 8px 20px;
             border-radius: 30px;
             cursor: pointer;
+            margin-left: 8px;
+        }
+        .sub-tab.active {
+            background: #2E86C1;
+            color: white;
+        }
+        .stats-card {
+            background: #F0F8FF;
+            border-radius: 24px;
+            padding: 12px 18px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         @media (max-width: 550px) {
             .card { padding: 25px 18px; }
@@ -249,25 +282,42 @@
             <p style="color: #2C7AB1;">اختر ما تريد إدارته</p>
         </div>
         <div class="buttons-grid" id="adminMainButtons">
-            <button class="btn" id="manageCoursesBtn"><i class="fas fa-book"></i> الكورسات</button>
+            <button class="btn" id="manageCoursesBtn"><i class="fas fa-book"></i> الكورسات (كل شيء)</button>
             <button class="btn" id="manageJobsBtn"><i class="fas fa-briefcase"></i> التقديم على وظيفة</button>
             <button class="btn" id="manageContactBtn"><i class="fas fa-envelope"></i> التواصل</button>
-            <button class="btn" id="manageRegistrationsBtn"><i class="fas fa-users"></i> تسجيلات الكورسات</button>
         </div>
         <button id="logoutBtn" style="margin-top: 20px; background: #FFDDDD; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; color: #B33; display: block; margin: 20px auto 0;">🚪 تسجيل خروج</button>
 
-        <!-- قسم الكورسات (للمدير) -->
+        <!-- قسم الكورسات المتكامل -->
         <div id="coursesSection" style="display: none; margin-top: 30px;">
-            <h3 style="color: #1E6F9F; text-align: center;">➕ إضافة كورس جديد</h3>
-            <div class="admin-form">
-                <input type="text" id="courseTitle" placeholder="اسم الكورس">
-                <textarea id="courseDesc" placeholder="وصف الكورس" rows="3"></textarea>
-                <input type="text" id="coursePrice" placeholder="السعر">
-                <input type="text" id="courseImage" placeholder="رابط الصورة">
-                <button id="addCourseBtn">📌 إضافة كورس</button>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+                <button class="sub-tab" id="coursesListTab">📚 قائمة الكورسات</button>
+                <button class="sub-tab" id="registrationsTab">📋 تسجيلات الطلاب</button>
+                <button class="sub-tab" id="statsTab">📊 إحصائيات الكورسات</button>
             </div>
-            <h3 style="color: #1E6F9F; text-align: center;">📚 قائمة الكورسات</h3>
-            <div id="coursesList"></div>
+            <!-- قسم قائمة الكورسات (إضافة، حذف) -->
+            <div id="coursesListSubsection">
+                <h3 style="color: #1E6F9F; text-align: center;">➕ إضافة كورس جديد</h3>
+                <div class="admin-form">
+                    <input type="text" id="courseTitle" placeholder="اسم الكورس">
+                    <textarea id="courseDesc" placeholder="وصف الكورس" rows="3"></textarea>
+                    <input type="text" id="coursePrice" placeholder="السعر">
+                    <input type="text" id="courseImage" placeholder="رابط الصورة">
+                    <button id="addCourseBtn">📌 إضافة كورس</button>
+                </div>
+                <h3 style="color: #1E6F9F; text-align: center;">📚 قائمة الكورسات</h3>
+                <div id="coursesList"></div>
+            </div>
+            <!-- قسم تسجيلات الطلاب -->
+            <div id="registrationsSubsection" style="display: none;">
+                <h3 style="color: #1E6F9F; text-align: center;">📋 قائمة الطلاب المسجلين في الكورسات</h3>
+                <div id="registrationsList"></div>
+            </div>
+            <!-- قسم الإحصائيات -->
+            <div id="statsSubsection" style="display: none;">
+                <h3 style="color: #1E6F9F; text-align: center;">📊 إحصائيات الكورسات (عدد المسجلين + متوسط التقييم)</h3>
+                <div id="statsList"></div>
+            </div>
             <button class="back-btn" id="backFromCoursesBtn">🔙 رجوع</button>
         </div>
 
@@ -305,13 +355,6 @@
             <div id="contactsList"></div>
             <button class="back-btn" id="backFromContactsBtn">🔙 رجوع</button>
         </div>
-
-        <!-- قسم تسجيلات الكورسات (للمدير) -->
-        <div id="registrationsSection" style="display: none; margin-top: 30px;">
-            <h3 style="color: #1E6F9F; text-align: center;">📋 قائمة الطلاب المسجلين في الكورسات</h3>
-            <div id="registrationsList"></div>
-            <button class="back-btn" id="backFromRegistrationsBtn">🔙 رجوع</button>
-        </div>
     </div>
 
     <footer>♥ نرحب بأطفالنا وأهلنا الأعزاء ♥</footer>
@@ -329,7 +372,7 @@
     </div>
 </div>
 
-<!-- مودال عرض الكورسات للزوار مع زر تسجيل -->
+<!-- مودال عرض الكورسات للزوار مع زر تسجيل وتصويت -->
 <div id="viewCoursesModal" class="modal">
     <div class="modal-content">
         <div class="close-modal" id="closeCoursesModal">✖</div>
@@ -338,26 +381,51 @@
     </div>
 </div>
 
-<!-- مودال تسجيل الطالب في كورس محدد -->
+<!-- مودال تسجيل الطالب في كورس (الهاتف إجباري، البريد اختياري) -->
 <div id="registerCourseModal" class="modal">
     <div class="modal-content">
         <div class="close-modal" id="closeRegisterModal">✖</div>
         <h2 id="registerCourseTitle">التسجيل في الكورس</h2>
         <input type="hidden" id="selectedCourseId">
         <div class="form-group">
-            <input type="text" id="studentName" placeholder="الاسم كاملاً" required>
+            <input type="text" id="studentName" placeholder="الاسم كاملاً (إجباري)" required>
         </div>
         <div class="form-group">
-            <input type="email" id="studentEmail" placeholder="البريد الإلكتروني" required>
+            <input type="tel" id="studentPhone" placeholder="رقم الهاتف (إجباري)" required>
         </div>
         <div class="form-group">
-            <input type="tel" id="studentPhone" placeholder="رقم الهاتف (اختياري)">
+            <input type="email" id="studentEmail" placeholder="البريد الإلكتروني (اختياري)">
         </div>
         <div class="form-group">
             <textarea id="studentNote" placeholder="ملاحظات (اختياري)" rows="3"></textarea>
         </div>
         <button id="confirmRegistrationBtn" class="submit-btn">تأكيد التسجيل</button>
         <div id="regStatus"></div>
+    </div>
+</div>
+
+<!-- مودال التصويت (تقييم الكورس) -->
+<div id="voteModal" class="modal">
+    <div class="modal-content">
+        <div class="close-modal" id="closeVoteModal">✖</div>
+        <h2 id="voteCourseTitle">تقييم الكورس</h2>
+        <input type="hidden" id="voteCourseId">
+        <div class="form-group">
+            <label>اختر التقييم (من 1 إلى 5 نجوم):</label>
+            <div class="stars" id="starRating">
+                <span data-value="1">★</span>
+                <span data-value="2">★</span>
+                <span data-value="3">★</span>
+                <span data-value="4">★</span>
+                <span data-value="5">★</span>
+            </div>
+            <input type="hidden" id="ratingValue" value="0">
+        </div>
+        <div class="form-group">
+            <textarea id="voteComment" placeholder="تعليقك (اختياري)" rows="3"></textarea>
+        </div>
+        <button id="submitVoteBtn" class="submit-btn">إرسال التقييم</button>
+        <div id="voteStatus"></div>
     </div>
 </div>
 
@@ -414,6 +482,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
     const firebaseConfig = {
         apiKey: "AIzaSyAfx0mHlH54zi85V-9URyX9USq3TE-Aqd0",
         authDomain: "ican-site.firebaseapp.com",
@@ -456,12 +525,23 @@
     const closeRegisterModal = document.getElementById('closeRegisterModal');
     const selectedCourseId = document.getElementById('selectedCourseId');
     const studentName = document.getElementById('studentName');
-    const studentEmail = document.getElementById('studentEmail');
     const studentPhone = document.getElementById('studentPhone');
+    const studentEmail = document.getElementById('studentEmail');
     const studentNote = document.getElementById('studentNote');
     const confirmRegistrationBtn = document.getElementById('confirmRegistrationBtn');
     const regStatus = document.getElementById('regStatus');
     const registerCourseTitle = document.getElementById('registerCourseTitle');
+
+    // مودال التصويت
+    const voteModal = document.getElementById('voteModal');
+    const closeVoteModal = document.getElementById('closeVoteModal');
+    const voteCourseTitle = document.getElementById('voteCourseTitle');
+    const voteCourseId = document.getElementById('voteCourseId');
+    const starSpans = document.querySelectorAll('#starRating span');
+    const ratingValue = document.getElementById('ratingValue');
+    const voteComment = document.getElementById('voteComment');
+    const submitVoteBtn = document.getElementById('submitVoteBtn');
+    const voteStatus = document.getElementById('voteStatus');
 
     // عناصر التقديم على وظيفة
     const applicantName = document.getElementById('applicantName');
@@ -482,16 +562,13 @@
     const manageCoursesBtn = document.getElementById('manageCoursesBtn');
     const manageJobsBtn = document.getElementById('manageJobsBtn');
     const manageContactBtn = document.getElementById('manageContactBtn');
-    const manageRegistrationsBtn = document.getElementById('manageRegistrationsBtn');
     const adminMainButtons = document.getElementById('adminMainButtons');
     const coursesSection = document.getElementById('coursesSection');
     const jobsSection = document.getElementById('jobsSection');
     const contactsSection = document.getElementById('contactsSection');
-    const registrationsSection = document.getElementById('registrationsSection');
     const backFromCoursesBtn = document.getElementById('backFromCoursesBtn');
     const backFromJobsBtn = document.getElementById('backFromJobsBtn');
     const backFromContactsBtn = document.getElementById('backFromContactsBtn');
-    const backFromRegistrationsBtn = document.getElementById('backFromRegistrationsBtn');
     const coursesListDiv = document.getElementById('coursesList');
     const jobsListDiv = document.getElementById('jobsList');
     const contactsListDiv = document.getElementById('contactsList');
@@ -501,6 +578,13 @@
     const addContactBtn = document.getElementById('addContactBtn');
     const contactType = document.getElementById('contactType');
     const contactValue = document.getElementById('contactValue');
+    const coursesListSubsection = document.getElementById('coursesListSubsection');
+    const registrationsSubsection = document.getElementById('registrationsSubsection');
+    const statsSubsection = document.getElementById('statsSubsection');
+    const coursesListTab = document.getElementById('coursesListTab');
+    const registrationsTab = document.getElementById('registrationsTab');
+    const statsTab = document.getElementById('statsTab');
+    const statsListDiv = document.getElementById('statsList');
 
     // ======================== دوال مساعدة ========================
     function escapeHtml(str) {
@@ -519,7 +603,6 @@
         coursesSection.style.display = 'none';
         jobsSection.style.display = 'none';
         contactsSection.style.display = 'none';
-        registrationsSection.style.display = 'none';
         adminMainButtons.style.display = 'grid';
     }
 
@@ -552,17 +635,26 @@
                                 <strong>💰 ${escapeHtml(data.price)}</strong>
                             </div>
                         </div>
-                        <button class="register-btn" data-id="${courseId}" data-title="${escapeHtml(data.title)}">سجل الآن</button>
+                        <div>
+                            <button class="register-btn" data-id="${courseId}" data-title="${escapeHtml(data.title)}">سجل الآن</button>
+                            <button class="vote-btn" data-id="${courseId}" data-title="${escapeHtml(data.title)}">🗳️ تصويت</button>
+                        </div>
                     </div>
                 `;
             });
             publicCoursesList.innerHTML = html;
-            // إضافة حدث النقر على أزرار التسجيل
             document.querySelectorAll('.register-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const id = btn.getAttribute('data-id');
                     const title = btn.getAttribute('data-title');
                     openRegistrationModal(id, title);
+                });
+            });
+            document.querySelectorAll('.vote-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = btn.getAttribute('data-id');
+                    const title = btn.getAttribute('data-title');
+                    openVoteModal(id, title);
                 });
             });
         } catch (error) {
@@ -574,11 +666,21 @@
         selectedCourseId.value = courseId;
         registerCourseTitle.innerText = `التسجيل في كورس: ${courseTitle}`;
         studentName.value = '';
-        studentEmail.value = '';
         studentPhone.value = '';
+        studentEmail.value = '';
         studentNote.value = '';
         regStatus.innerHTML = '';
         registerCourseModal.style.display = 'flex';
+    }
+
+    function openVoteModal(courseId, courseTitle) {
+        voteCourseId.value = courseId;
+        voteCourseTitle.innerText = `تقييم كورس: ${courseTitle}`;
+        voteComment.value = '';
+        ratingValue.value = '0';
+        starSpans.forEach(span => span.classList.remove('active'));
+        voteStatus.innerHTML = '';
+        voteModal.style.display = 'flex';
     }
 
     async function displayJobsPublic() {
@@ -716,7 +818,6 @@
             let html = '';
             for (const docSnap of snapshot.docs) {
                 const data = docSnap.data();
-                // جلب اسم الكورس من معرف الكورس المخزن
                 let courseTitle = 'كورس غير معروف';
                 if (data.courseId) {
                     const courseRef = doc(db, "courses", data.courseId);
@@ -728,8 +829,8 @@
                         <div>📋</div>
                         <div class="item-info">
                             <strong>${escapeHtml(data.studentName)}</strong><br>
-                            البريد: ${escapeHtml(data.studentEmail)}<br>
-                            الهاتف: ${escapeHtml(data.studentPhone || 'غير موجود')}<br>
+                            الهاتف: ${escapeHtml(data.studentPhone)}<br>
+                            البريد: ${escapeHtml(data.studentEmail || 'غير موجود')}<br>
                             الكورس: ${escapeHtml(courseTitle)}<br>
                             ملاحظات: ${escapeHtml(data.note || 'لا توجد')}<br>
                             <small>تاريخ التسجيل: ${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small>
@@ -743,6 +844,41 @@
                 if (confirm('حذف هذا التسجيل؟')) { await deleteDoc(doc(db, "courseRegistrations", btn.dataset.id)); loadRegistrations(); }
             }));
         } catch(e) { registrationsListDiv.innerHTML = '<p style="color:red;">خطأ في تحميل التسجيلات</p>'; console.error(e); }
+    }
+
+    async function showStatistics() {
+        statsListDiv.innerHTML = '<div style="text-align:center;">⏳ جاري تحميل الإحصائيات...</div>';
+        try {
+            const coursesSnapshot = await getDocs(collection(db, "courses"));
+            if (coursesSnapshot.empty) {
+                statsListDiv.innerHTML = '<p style="color:gray;">لا توجد كورسات</p>';
+                return;
+            }
+            const regSnapshot = await getDocs(collection(db, "courseRegistrations"));
+            const registrations = [];
+            regSnapshot.forEach(doc => registrations.push(doc.data()));
+            const ratingsSnapshot = await getDocs(collection(db, "ratings"));
+            const ratings = [];
+            ratingsSnapshot.forEach(doc => ratings.push(doc.data()));
+
+            let html = '';
+            for (const courseDoc of coursesSnapshot.docs) {
+                const course = courseDoc.data();
+                const courseId = courseDoc.id;
+                const count = registrations.filter(reg => reg.courseId === courseId).length;
+                const courseRatings = ratings.filter(r => r.courseId === courseId);
+                const avgRating = courseRatings.length > 0 ? (courseRatings.reduce((sum, r) => sum + r.rating, 0) / courseRatings.length).toFixed(1) : 'لا توجد تقييمات';
+                html += `
+                    <div class="stats-card">
+                        <div><strong>${escapeHtml(course.title)}</strong></div>
+                        <div>👨‍🎓 المسجلين: ${count} &nbsp; | ⭐ التقييم: ${avgRating}</div>
+                    </div>
+                `;
+            }
+            statsListDiv.innerHTML = html;
+        } catch (error) {
+            statsListDiv.innerHTML = '<p style="color:red;">فشل تحميل الإحصائيات</p>';
+        }
     }
 
     // إضافة كورس
@@ -783,19 +919,19 @@
     confirmRegistrationBtn.addEventListener('click', async () => {
         const courseId = selectedCourseId.value;
         const name = studentName.value.trim();
-        const email = studentEmail.value.trim();
         const phone = studentPhone.value.trim();
+        const email = studentEmail.value.trim();
         const note = studentNote.value.trim();
-        if (!name || !email) {
-            regStatus.innerText = '❌ الاسم والبريد الإلكتروني مطلوبان';
+        if (!name || !phone) {
+            regStatus.innerText = '❌ الاسم ورقم الهاتف مطلوبان';
             return;
         }
         try {
             await addDoc(collection(db, "courseRegistrations"), {
                 courseId,
                 studentName: name,
-                studentEmail: email,
                 studentPhone: phone,
+                studentEmail: email,
                 note,
                 createdAt: new Date()
             });
@@ -806,15 +942,97 @@
         }
     });
 
-    // أزرار التنقل للمدير
-    manageCoursesBtn.onclick = () => { adminMainButtons.style.display = 'none'; coursesSection.style.display = 'block'; loadCourses(); };
-    backFromCoursesBtn.onclick = () => { coursesSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
+    // إرسال التقييم
+    submitVoteBtn.addEventListener('click', async () => {
+        const courseId = voteCourseId.value;
+        const rating = parseInt(ratingValue.value);
+        const comment = voteComment.value.trim();
+        if (!rating || rating < 1 || rating > 5) {
+            voteStatus.innerText = '❌ الرجاء اختيار تقييم بالنجوم';
+            return;
+        }
+        try {
+            await addDoc(collection(db, "ratings"), {
+                courseId,
+                rating,
+                comment,
+                createdAt: new Date()
+            });
+            voteStatus.innerText = '✅ شكراً لك، تم تسجيل تقييمك';
+            setTimeout(() => voteModal.style.display = 'none', 2000);
+        } catch (err) {
+            voteStatus.innerText = '⚠️ حدث خطأ، حاول مرة أخرى';
+        }
+    });
+
+    // نجوم التقييم
+    starSpans.forEach(span => {
+        span.addEventListener('click', () => {
+            const value = parseInt(span.getAttribute('data-value'));
+            ratingValue.value = value;
+            starSpans.forEach(s => s.classList.remove('active'));
+            for (let i = 0; i < value; i++) {
+                starSpans[i].classList.add('active');
+            }
+        });
+    });
+
+    // أزرار التنقل للمدير داخل قسم الكورسات
+    manageCoursesBtn.onclick = () => {
+        adminMainButtons.style.display = 'none';
+        coursesSection.style.display = 'block';
+        coursesListSubsection.style.display = 'block';
+        registrationsSubsection.style.display = 'none';
+        statsSubsection.style.display = 'none';
+        // تفعيل التبويب النشط
+        coursesListTab.classList.add('active');
+        registrationsTab.classList.remove('active');
+        statsTab.classList.remove('active');
+        loadCourses();
+        loadRegistrations(); // تحميل البيانات تحسباً
+        showStatistics();
+    };
+    coursesListTab.onclick = () => {
+        coursesListSubsection.style.display = 'block';
+        registrationsSubsection.style.display = 'none';
+        statsSubsection.style.display = 'none';
+        coursesListTab.classList.add('active');
+        registrationsTab.classList.remove('active');
+        statsTab.classList.remove('active');
+        loadCourses();
+    };
+    registrationsTab.onclick = () => {
+        coursesListSubsection.style.display = 'none';
+        registrationsSubsection.style.display = 'block';
+        statsSubsection.style.display = 'none';
+        registrationsTab.classList.add('active');
+        coursesListTab.classList.remove('active');
+        statsTab.classList.remove('active');
+        loadRegistrations();
+    };
+    statsTab.onclick = () => {
+        coursesListSubsection.style.display = 'none';
+        registrationsSubsection.style.display = 'none';
+        statsSubsection.style.display = 'block';
+        statsTab.classList.add('active');
+        coursesListTab.classList.remove('active');
+        registrationsTab.classList.remove('active');
+        showStatistics();
+    };
+    backFromCoursesBtn.onclick = () => {
+        coursesSection.style.display = 'none';
+        adminMainButtons.style.display = 'grid';
+    };
+    backFromJobsBtn.onclick = () => {
+        jobsSection.style.display = 'none';
+        adminMainButtons.style.display = 'grid';
+    };
+    backFromContactsBtn.onclick = () => {
+        contactsSection.style.display = 'none';
+        adminMainButtons.style.display = 'grid';
+    };
     manageJobsBtn.onclick = () => { adminMainButtons.style.display = 'none'; jobsSection.style.display = 'block'; loadJobs(); };
-    backFromJobsBtn.onclick = () => { jobsSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
     manageContactBtn.onclick = () => { adminMainButtons.style.display = 'none'; contactsSection.style.display = 'block'; loadContacts(); };
-    backFromContactsBtn.onclick = () => { contactsSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
-    manageRegistrationsBtn.onclick = () => { adminMainButtons.style.display = 'none'; registrationsSection.style.display = 'block'; loadRegistrations(); };
-    backFromRegistrationsBtn.onclick = () => { registrationsSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
 
     // ======================== المصادقة ========================
     onAuthStateChanged(auth, (user) => { if (user) showAdminPanel(); else showPublicUI(); });
@@ -826,6 +1044,7 @@
         if (e.target === viewJobsModal) viewJobsModal.style.display = 'none';
         if (e.target === viewContactModal) viewContactModal.style.display = 'none';
         if (e.target === registerCourseModal) registerCourseModal.style.display = 'none';
+        if (e.target === voteModal) voteModal.style.display = 'none';
     };
     loginSubmit.onclick = async () => {
         const email = loginEmail.value.trim(), pwd = loginPassword.value.trim();
@@ -846,6 +1065,7 @@
     contactBtn.onclick = () => { viewContactModal.style.display = 'flex'; displayContactInfoPublic(); };
     closeContactModal.onclick = () => viewContactModal.style.display = 'none';
     closeRegisterModal.onclick = () => registerCourseModal.style.display = 'none';
+    closeVoteModal.onclick = () => voteModal.style.display = 'none';
 
     // تقديم طلب وظيفة
     submitApplicationBtn.onclick = async () => {
