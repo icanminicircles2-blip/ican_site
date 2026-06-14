@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>مركز ican - منصة تعليمية</title>
+    <title>مركز ican - إدارة التواصل</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* نفس الـ CSS اللي عندك بالكامل، من غير تغيير */
         * {
             margin: 0;
             padding: 0;
@@ -27,9 +26,7 @@
             background-color: #FFFFFF;
             border-radius: 64px;
             box-shadow: 0 25px 45px rgba(0, 50, 100, 0.12);
-            overflow: hidden;
             padding: 40px 30px 50px;
-            transition: all 0.3s ease;
             border: 1px solid #D6E9FF;
         }
         .header {
@@ -43,14 +40,11 @@
             display: inline-block;
             padding: 10px 35px;
             border-radius: 100px;
-            letter-spacing: -0.5px;
-            box-shadow: 0 5px 12px rgba(0,0,0,0.03);
         }
         .header p {
             color: #2C7AB1;
             font-size: 1.15rem;
             margin-top: 15px;
-            font-weight: 500;
         }
         .buttons-grid {
             display: grid;
@@ -67,26 +61,18 @@
             font-weight: bold;
             color: #1A5D8C;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: 0.25s;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 12px;
             box-shadow: 0 8px 0 #CDE5F5;
         }
-        .btn i {
-            font-size: 2.2rem;
-            color: #2E86C1;
-        }
+        .btn i { font-size: 2.2rem; color: #2E86C1; }
         .btn:hover {
             transform: translateY(-4px);
             background: #E6F2FB;
-            border-color: #AAD0FF;
             box-shadow: 0 12px 0 #B8D9F0;
-        }
-        .btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 4px 0 #CDE5F5;
         }
         .modal {
             display: none;
@@ -95,101 +81,100 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(30, 111, 159, 0.15);
+            background: rgba(30, 111, 159, 0.15);
             backdrop-filter: blur(6px);
             justify-content: center;
             align-items: center;
             z-index: 2000;
         }
         .modal-content {
-            background-color: #FFFFFF;
+            background: white;
             max-width: 420px;
             width: 85%;
             padding: 35px 25px;
             border-radius: 56px;
             text-align: center;
-            box-shadow: 0 25px 40px rgba(0,0,0,0.1);
             border: 1px solid #B8D9FF;
-            animation: bounceSoft 0.3s ease;
         }
-        @keyframes bounceSoft {
-            0% { transform: scale(0.95); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .modal-content h2 {
-            color: #1E6F9F;
-            font-size: 1.9rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .modal-content input {
+        .modal-content h2 { color: #1E6F9F; margin-bottom: 20px; }
+        .modal-content input, .modal-content textarea, .modal-content select {
             width: 100%;
             padding: 14px 18px;
             margin: 12px 0;
             border: 2px solid #CAE3FF;
             border-radius: 60px;
-            font-size: 1rem;
             background: #FDFEFF;
-            outline: none;
-            transition: 0.2s;
-        }
-        .modal-content input:focus {
-            border-color: #5BA3D9;
-            box-shadow: 0 0 0 3px rgba(91, 163, 217, 0.2);
+            font-family: inherit;
         }
         .modal-content button {
             background: #D9EEFF;
             color: #1C5A7F;
             border: none;
-            padding: 14px 20px;
+            padding: 14px;
             width: 100%;
             border-radius: 60px;
-            font-size: 1.2rem;
             font-weight: bold;
             margin-top: 16px;
             cursor: pointer;
-            transition: 0.2s;
-        }
-        .modal-content button:hover {
-            background: #C2E2FF;
-            color: #0F4665;
         }
         .close-modal {
             position: absolute;
             top: 20px;
             left: 25px;
             font-size: 32px;
-            font-weight: bold;
-            color: #5B9BD5;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
-            background: #EFF7FF;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
+            color: #5B9BD5;
         }
-        .close-modal:hover {
-            background: #DFEEFC;
-            color: #1A5D8C;
-        }
-        .message {
-            margin-top: 16px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
+        .message { margin-top: 16px; font-size: 0.9rem; }
         footer {
             text-align: center;
             margin-top: 50px;
-            font-size: 0.8rem;
             color: #6A9FC7;
             border-top: 1px solid #E3F0FA;
             padding-top: 25px;
+        }
+        /* تنسيقات الإدارة */
+        .admin-form {
+            background: #F0F8FF;
+            padding: 20px;
+            border-radius: 32px;
+            margin: 20px 0;
+        }
+        .admin-form input, .admin-form textarea, .admin-form select {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 30px;
+            border: 1px solid #CAE3FF;
+            font-family: inherit;
+        }
+        .item-card {
+            background: white;
+            border: 1px solid #CAE3FF;
+            border-radius: 24px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .item-info { flex: 1; }
+        .delete-btn {
+            background: #FFDDDD;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: #B33;
+        }
+        .back-btn {
+            margin-top: 20px;
+            background: #DDD;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
         }
         @media (max-width: 550px) {
             .card { padding: 25px 18px; }
@@ -207,7 +192,7 @@
         <p>▶︎ نتعلم ونلعب ونكبر سوا ◀︎</p>
     </div>
 
-    <!-- الأزرار الأصلية (تظهر للجميع) -->
+    <!-- الأزرار العامة (للزوار) -->
     <div class="buttons-grid" id="publicButtons">
         <button class="btn" id="adminBtn"><i class="fas fa-chalkboard-user"></i> الإدارة</button>
         <button class="btn" id="coursesBtn"><i class="fas fa-book-open"></i> كورسات</button>
@@ -215,18 +200,68 @@
         <button class="btn" id="contactBtn"><i class="fas fa-heart"></i> تواصل معنا</button>
     </div>
 
-    <!-- لوحة المدير (تظهر فقط بعد تسجيل الدخول) -->
+    <!-- لوحة المدير (تظهر بعد تسجيل الدخول) -->
     <div id="adminPanel" style="display: none;">
         <div style="text-align: center; margin: 20px 0 10px;">
             <h3 style="color: #1E6F9F;">👋 مرحباً مدير المركز</h3>
             <p style="color: #2C7AB1;">اختر ما تريد إدارته</p>
         </div>
-        <div class="buttons-grid">
+        <div class="buttons-grid" id="adminMainButtons">
             <button class="btn" id="manageCoursesBtn"><i class="fas fa-book"></i> الكورسات</button>
             <button class="btn" id="manageJobsBtn"><i class="fas fa-briefcase"></i> التقديم على وظيفة</button>
             <button class="btn" id="manageContactBtn"><i class="fas fa-envelope"></i> التواصل</button>
         </div>
-        <button id="logoutBtn" style="margin-top: 20px; background: #FFDDDD; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; color: #B33; display: block; margin-left: auto; margin-right: auto;">🚪 تسجيل خروج</button>
+        <button id="logoutBtn" style="margin-top: 20px; background: #FFDDDD; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; color: #B33; display: block; margin: 20px auto 0;">🚪 تسجيل خروج</button>
+
+        <!-- قسم الكورسات -->
+        <div id="coursesSection" style="display: none; margin-top: 30px;">
+            <h3 style="color: #1E6F9F; text-align: center;">➕ إضافة كورس جديد</h3>
+            <div class="admin-form">
+                <input type="text" id="courseTitle" placeholder="اسم الكورس">
+                <textarea id="courseDesc" placeholder="وصف الكورس" rows="3"></textarea>
+                <input type="text" id="coursePrice" placeholder="السعر">
+                <input type="text" id="courseImage" placeholder="رابط الصورة (اختياري)">
+                <button id="addCourseBtn" style="background:#2E86C1; color:white; padding:10px; border:none; border-radius:30px;">📌 إضافة كورس</button>
+            </div>
+            <h3 style="color: #1E6F9F; text-align: center;">📚 قائمة الكورسات</h3>
+            <div id="coursesList" style="max-height: 400px; overflow-y: auto;"></div>
+            <button class="back-btn" id="backFromCoursesBtn">🔙 رجوع</button>
+        </div>
+
+        <!-- قسم الوظائف -->
+        <div id="jobsSection" style="display: none; margin-top: 30px;">
+            <h3 style="color: #1E6F9F; text-align: center;">➕ إضافة وظيفة جديدة</h3>
+            <div class="admin-form">
+                <input type="text" id="jobTitle" placeholder="المسمى الوظيفي">
+                <textarea id="jobRequirements" placeholder="متطلبات الوظيفة" rows="3"></textarea>
+                <input type="text" id="jobDeadline" placeholder="آخر موعد للتقديم">
+                <button id="addJobBtn" style="background:#2E86C1; color:white; padding:10px; border:none; border-radius:30px;">📌 إضافة وظيفة</button>
+            </div>
+            <h3 style="color: #1E6F9F; text-align: center;">📋 الوظائف المتاحة</h3>
+            <div id="jobsList" style="max-height: 400px; overflow-y: auto;"></div>
+            <button class="back-btn" id="backFromJobsBtn">🔙 رجوع</button>
+        </div>
+
+        <!-- قسم التواصل (إضافة أرقام وروابط) -->
+        <div id="contactsSection" style="display: none; margin-top: 30px;">
+            <h3 style="color: #1E6F9F; text-align: center;">➕ إضافة وسيلة تواصل جديدة</h3>
+            <div class="admin-form">
+                <select id="contactType">
+                    <option value="phone">📞 هاتف</option>
+                    <option value="whatsapp">💬 واتساب</option>
+                    <option value="facebook">📘 فيسبوك</option>
+                    <option value="twitter">🐦 تويتر</option>
+                    <option value="instagram">📷 إنستغرام</option>
+                    <option value="email">✉️ إيميل</option>
+                    <option value="address">🏠 عنوان</option>
+                </select>
+                <input type="text" id="contactValue" placeholder="القيمة (مثال: 0501234567 أو رابط)">
+                <button id="addContactBtn" style="background:#2E86C1; color:white; padding:10px; border:none; border-radius:30px;">➕ إضافة</button>
+            </div>
+            <h3 style="color: #1E6F9F; text-align: center;">📋 وسائل التواصل الحالية</h3>
+            <div id="contactsList" style="max-height: 400px; overflow-y: auto;"></div>
+            <button class="back-btn" id="backFromContactsBtn">🔙 رجوع</button>
+        </div>
     </div>
 
     <footer>♥ نرحب بأطفالنا وأهلنا الأعزاء ♥</footer>
@@ -237,7 +272,7 @@
     <div class="modal-content">
         <div class="close-modal" id="closeModalBtn">✖</div>
         <h2><i class="fas fa-lock"></i> دخول المدير</h2>
-        <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" autocomplete="email">
+        <input type="email" id="loginEmail" placeholder="البريد الإلكتروني">
         <input type="password" id="loginPassword" placeholder="كلمة المرور">
         <button id="loginSubmitBtn">دخول</button>
         <div id="loginMessage" class="message"></div>
@@ -247,7 +282,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAfx0mHlH54zi85V-9URyX9USq3TE-Aqd0",
@@ -255,15 +290,14 @@
         projectId: "ican-site",
         storageBucket: "ican-site.firebasestorage.app",
         messagingSenderId: "685331507801",
-        appId: "1:685331507801:web:85c8cbf81cd55446681f48",
-        measurementId: "G-6BVVCZTKRW"
+        appId: "1:685331507801:web:85c8cbf81cd55446681f48"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // عناصر الواجهة
+    // عناصر الواجهة العامة
     const publicButtonsGrid = document.getElementById('publicButtons');
     const adminPanel = document.getElementById('adminPanel');
     const adminBtn = document.getElementById('adminBtn');
@@ -277,105 +311,289 @@
     const loginPassword = document.getElementById('loginPassword');
     const loginMessage = document.getElementById('loginMessage');
     const logoutBtn = document.getElementById('logoutBtn');
+
+    // أزرار المدير
     const manageCoursesBtn = document.getElementById('manageCoursesBtn');
     const manageJobsBtn = document.getElementById('manageJobsBtn');
     const manageContactBtn = document.getElementById('manageContactBtn');
+    const adminMainButtons = document.getElementById('adminMainButtons');
+
+    // أقسام المدير
+    const coursesSection = document.getElementById('coursesSection');
+    const jobsSection = document.getElementById('jobsSection');
+    const contactsSection = document.getElementById('contactsSection');
+    const backFromCoursesBtn = document.getElementById('backFromCoursesBtn');
+    const backFromJobsBtn = document.getElementById('backFromJobsBtn');
+    const backFromContactsBtn = document.getElementById('backFromContactsBtn');
+
+    // قوائم
+    const coursesListDiv = document.getElementById('coursesList');
+    const jobsListDiv = document.getElementById('jobsList');
+    const contactsListDiv = document.getElementById('contactsList');
+
+    // نماذج الإضافة
+    const addCourseBtn = document.getElementById('addCourseBtn');
+    const addJobBtn = document.getElementById('addJobBtn');
+    const addContactBtn = document.getElementById('addContactBtn');
+    const contactType = document.getElementById('contactType');
+    const contactValue = document.getElementById('contactValue');
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
 
     function showAdminPanel() {
-        if (publicButtonsGrid) publicButtonsGrid.style.display = 'none';
-        if (adminPanel) adminPanel.style.display = 'block';
+        publicButtonsGrid.style.display = 'none';
+        adminPanel.style.display = 'block';
+        coursesSection.style.display = 'none';
+        jobsSection.style.display = 'none';
+        contactsSection.style.display = 'none';
+        adminMainButtons.style.display = 'grid';
     }
 
     function showPublicUI() {
-        if (publicButtonsGrid) publicButtonsGrid.style.display = 'grid';
-        if (adminPanel) adminPanel.style.display = 'none';
+        publicButtonsGrid.style.display = 'grid';
+        adminPanel.style.display = 'none';
     }
 
+    // دوال الكورسات
+    async function loadCourses() {
+        coursesListDiv.innerHTML = '<div style="text-align:center;">⏳ جاري التحميل...</div>';
+        try {
+            const q = query(collection(db, "courses"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) {
+                coursesListDiv.innerHTML = '<div style="text-align:center; color: gray;">📭 لا توجد كورسات</div>';
+                return;
+            }
+            let html = '';
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                html += `
+                    <div class="item-card">
+                        ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.title}" style="width:60px; height:60px; object-fit:cover; border-radius:16px;">` : '<div style="width:60px; text-align:center;">📘</div>'}
+                        <div class="item-info">
+                            <h4>${escapeHtml(data.title)}</h4>
+                            <p>${escapeHtml(data.description)}</p>
+                            <strong>💰 ${escapeHtml(data.price)}</strong>
+                        </div>
+                        <button data-id="${docSnap.id}" class="delete-btn delete-course">🗑️ حذف</button>
+                    </div>
+                `;
+            });
+            coursesListDiv.innerHTML = html;
+            document.querySelectorAll('.delete-course').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if (confirm('حذف الكورس؟')) {
+                        await deleteDoc(doc(db, "courses", btn.dataset.id));
+                        loadCourses();
+                    }
+                });
+            });
+        } catch (error) { coursesListDiv.innerHTML = '<div style="color:red;">⚠️ خطأ</div>'; }
+    }
+
+    // دوال الوظائف
+    async function loadJobs() {
+        jobsListDiv.innerHTML = '<div style="text-align:center;">⏳ جاري التحميل...</div>';
+        try {
+            const q = query(collection(db, "jobs"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) {
+                jobsListDiv.innerHTML = '<div style="text-align:center; color: gray;">📭 لا توجد وظائف</div>';
+                return;
+            }
+            let html = '';
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                html += `
+                    <div class="item-card">
+                        <div style="width:60px; text-align:center;">💼</div>
+                        <div class="item-info">
+                            <h4>${escapeHtml(data.title)}</h4>
+                            <p>${escapeHtml(data.requirements)}</p>
+                            <strong>📅 ${escapeHtml(data.deadline)}</strong>
+                        </div>
+                        <button data-id="${docSnap.id}" class="delete-btn delete-job">🗑️ حذف</button>
+                    </div>
+                `;
+            });
+            jobsListDiv.innerHTML = html;
+            document.querySelectorAll('.delete-job').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if (confirm('حذف الوظيفة؟')) {
+                        await deleteDoc(doc(db, "jobs", btn.dataset.id));
+                        loadJobs();
+                    }
+                });
+            });
+        } catch (error) { jobsListDiv.innerHTML = '<div style="color:red;">⚠️ خطأ</div>'; }
+    }
+
+    // دوال التواصل (إدارة الأرقام والروابط)
+    async function loadContacts() {
+        contactsListDiv.innerHTML = '<div style="text-align:center;">⏳ جاري التحميل...</div>';
+        try {
+            const q = query(collection(db, "contactInfo"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) {
+                contactsListDiv.innerHTML = '<div style="text-align:center; color: gray;">📭 لا توجد وسائل تواصل</div>';
+                return;
+            }
+            let html = '';
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                let iconHtml = '';
+                switch(data.type) {
+                    case 'phone': iconHtml = '<i class="fas fa-phone" style="font-size:2rem; color:#2E86C1;"></i>'; break;
+                    case 'whatsapp': iconHtml = '<i class="fab fa-whatsapp" style="font-size:2rem; color:#2E86C1;"></i>'; break;
+                    case 'facebook': iconHtml = '<i class="fab fa-facebook" style="font-size:2rem; color:#2E86C1;"></i>'; break;
+                    case 'twitter': iconHtml = '<i class="fab fa-twitter" style="font-size:2rem; color:#2E86C1;"></i>'; break;
+                    case 'instagram': iconHtml = '<i class="fab fa-instagram" style="font-size:2rem; color:#2E86C1;"></i>'; break;
+                    case 'email': iconHtml = '<i class="fas fa-envelope" style="font-size:2rem; color:#2E86C1;"></i>'; break;
+                    case 'address': iconHtml = '<i class="fas fa-map-marker-alt" style="font-size:2rem; color:#2E86C1;"></i>'; break;
+                    default: iconHtml = '<i class="fas fa-link" style="font-size:2rem;"></i>';
+                }
+                html += `
+                    <div class="item-card">
+                        <div style="width:60px; text-align:center;">${iconHtml}</div>
+                        <div class="item-info">
+                            <strong>${escapeHtml(data.type)}</strong><br>
+                            <span dir="ltr">${escapeHtml(data.value)}</span>
+                        </div>
+                        <button data-id="${docSnap.id}" class="delete-btn delete-contact">🗑️ حذف</button>
+                    </div>
+                `;
+            });
+            contactsListDiv.innerHTML = html;
+            document.querySelectorAll('.delete-contact').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    if (confirm('حذف وسيلة التواصل هذه؟')) {
+                        await deleteDoc(doc(db, "contactInfo", btn.dataset.id));
+                        loadContacts();
+                    }
+                });
+            });
+        } catch (error) { contactsListDiv.innerHTML = '<div style="color:red;">⚠️ خطأ</div>'; }
+    }
+
+    // إضافة كورس
+    addCourseBtn.addEventListener('click', async () => {
+        const title = document.getElementById('courseTitle').value.trim();
+        const desc = document.getElementById('courseDesc').value.trim();
+        const price = document.getElementById('coursePrice').value.trim();
+        const img = document.getElementById('courseImage').value.trim();
+        if (!title || !desc || !price) return alert("املأ الحقول الأساسية");
+        await addDoc(collection(db, "courses"), { title, description: desc, price, imageUrl: img, createdAt: new Date() });
+        alert("تم الإضافة");
+        document.getElementById('courseTitle').value = '';
+        document.getElementById('courseDesc').value = '';
+        document.getElementById('coursePrice').value = '';
+        document.getElementById('courseImage').value = '';
+        loadCourses();
+    });
+
+    // إضافة وظيفة
+    addJobBtn.addEventListener('click', async () => {
+        const title = document.getElementById('jobTitle').value.trim();
+        const req = document.getElementById('jobRequirements').value.trim();
+        const deadline = document.getElementById('jobDeadline').value.trim();
+        if (!title || !req || !deadline) return alert("املأ الحقول");
+        await addDoc(collection(db, "jobs"), { title, requirements: req, deadline, createdAt: new Date() });
+        alert("تمت الإضافة");
+        document.getElementById('jobTitle').value = '';
+        document.getElementById('jobRequirements').value = '';
+        document.getElementById('jobDeadline').value = '';
+        loadJobs();
+    });
+
+    // إضافة وسيلة تواصل
+    addContactBtn.addEventListener('click', async () => {
+        const type = contactType.value;
+        const value = contactValue.value.trim();
+        if (!value) return alert("أدخل القيمة (رقم أو رابط)");
+        await addDoc(collection(db, "contactInfo"), { type, value, createdAt: new Date() });
+        alert("✅ تمت الإضافة");
+        contactValue.value = '';
+        loadContacts();
+    });
+
+    // التنقل بين الأقسام
+    manageCoursesBtn.addEventListener('click', () => {
+        adminMainButtons.style.display = 'none';
+        coursesSection.style.display = 'block';
+        loadCourses();
+    });
+    backFromCoursesBtn.addEventListener('click', () => {
+        coursesSection.style.display = 'none';
+        adminMainButtons.style.display = 'grid';
+    });
+
+    manageJobsBtn.addEventListener('click', () => {
+        adminMainButtons.style.display = 'none';
+        jobsSection.style.display = 'block';
+        loadJobs();
+    });
+    backFromJobsBtn.addEventListener('click', () => {
+        jobsSection.style.display = 'none';
+        adminMainButtons.style.display = 'grid';
+    });
+
+    manageContactBtn.addEventListener('click', () => {
+        adminMainButtons.style.display = 'none';
+        contactsSection.style.display = 'block';
+        loadContacts();
+    });
+    backFromContactsBtn.addEventListener('click', () => {
+        contactsSection.style.display = 'none';
+        adminMainButtons.style.display = 'grid';
+    });
+
+    // المصادقة
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log("المدير متصل:", user.email);
-            showAdminPanel();
-        } else {
-            showPublicUI();
-        }
+        if (user) showAdminPanel();
+        else showPublicUI();
     });
 
     adminBtn.addEventListener('click', () => {
         loginModal.style.display = 'flex';
         loginMessage.innerHTML = '';
-        loginEmail.value = '';
-        loginPassword.value = '';
     });
-
-    closeModalBtn.addEventListener('click', () => {
-        loginModal.style.display = 'none';
-    });
+    closeModalBtn.addEventListener('click', () => loginModal.style.display = 'none');
     window.addEventListener('click', (e) => {
         if (e.target === loginModal) loginModal.style.display = 'none';
     });
 
     loginSubmit.addEventListener('click', async () => {
         const email = loginEmail.value.trim();
-        const password = loginPassword.value.trim();
-        if (!email || !password) {
-            loginMessage.innerText = '❌ من فضلك اكتب البريد وكلمة السر';
-            return;
-        }
-        loginMessage.innerText = '⏳ جاري ...';
+        const pwd = loginPassword.value.trim();
+        if (!email || !pwd) return loginMessage.innerText = '❌ أدخل البريد وكلمة السر';
+        loginMessage.innerText = '⏳ ...';
         loginSubmit.disabled = true;
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            loginMessage.style.color = '#2c7a4d';
-            loginMessage.innerText = '✅ تم الدخول! مرحباً مدير المركز';
-            setTimeout(() => {
-                loginModal.style.display = 'none';
-                showAdminPanel();
-            }, 1200);
-        } catch (error) {
-            let errorMsg = '';
-            if (error.code === 'auth/user-not-found') errorMsg = '✖ هذا البريد غير مسجل كمدير';
-            else if (error.code === 'auth/wrong-password') errorMsg = '✖ كلمة المرور خطأ';
-            else errorMsg = '⚠️ فشل الدخول: ' + error.message;
-            loginMessage.style.color = '#d9534f';
-            loginMessage.innerText = errorMsg;
-        } finally {
-            loginSubmit.disabled = false;
-        }
+            await signInWithEmailAndPassword(auth, email, pwd);
+            loginMessage.innerText = '✅ تم الدخول';
+            setTimeout(() => loginModal.style.display = 'none', 1200);
+        } catch (err) {
+            loginMessage.innerText = err.code === 'auth/user-not-found' ? '✖ غير مسجل' : '✖ كلمة مرور خاطئة';
+        } finally { loginSubmit.disabled = false; }
     });
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-            await signOut(auth);
-            alert("تم تسجيل الخروج");
-            showPublicUI();
-        });
-    }
+    logoutBtn.addEventListener('click', async () => {
+        await signOut(auth);
+        alert("تم الخروج");
+    });
 
-    if (manageCoursesBtn) {
-        manageCoursesBtn.addEventListener('click', () => {
-            alert("📚 إدارة الكورسات: سنضيفها في الخطوة القادمة (إضافة، حذف، تعديل)");
-        });
-    }
-    if (manageJobsBtn) {
-        manageJobsBtn.addEventListener('click', () => {
-            alert("📝 إدارة طلبات الوظائف: سيتم ربطها بـ Firestore قريباً");
-        });
-    }
-    if (manageContactBtn) {
-        manageContactBtn.addEventListener('click', () => {
-            alert("💬 إدارة رسائل التواصل: قيد التطوير");
-        });
-    }
-
-    if (coursesBtn) {
-        coursesBtn.addEventListener('click', () => alert("📚 كورسات المركز: قريباً جداً"));
-    }
-    if (jobBtn) {
-        jobBtn.addEventListener('click', () => alert("📝 قدم على وظيفة: سيتم تفعيل النموذج قريباً"));
-    }
-    if (contactBtn) {
-        contactBtn.addEventListener('click', () => alert("📞 للتواصل مع المركز: جاري ربط الرسائل"));
-    }
+    // الأزرار العامة للزوار (رسائل مؤقتة)
+    coursesBtn.addEventListener('click', () => alert("📚 سيتم عرض الكورسات قريباً"));
+    jobBtn.addEventListener('click', () => alert("📝 نموذج التقديم على الوظائف قيد الإعداد"));
+    contactBtn.addEventListener('click', () => alert("📞 سيتم عرض وسائل التواصل قريباً"));
 </script>
 </body>
 </html>
