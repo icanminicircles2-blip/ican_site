@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>مركز ican - منصة متكاملة</title>
+    <title>مركز ican - تسجيل في الكورسات</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -74,7 +74,6 @@
             background: #E6F2FB;
             box-shadow: 0 12px 0 #B8D9F0;
         }
-        /* تنسيق المودالات العامة */
         .modal {
             display: none;
             position: fixed;
@@ -150,6 +149,17 @@
             border: 1px solid #D6E9FF;
             border-radius: 24px;
             padding: 15px;
+            position: relative;
+        }
+        .register-btn {
+            background: #2E86C1;
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
         }
         .contact-badge {
             display: inline-flex;
@@ -242,6 +252,7 @@
             <button class="btn" id="manageCoursesBtn"><i class="fas fa-book"></i> الكورسات</button>
             <button class="btn" id="manageJobsBtn"><i class="fas fa-briefcase"></i> التقديم على وظيفة</button>
             <button class="btn" id="manageContactBtn"><i class="fas fa-envelope"></i> التواصل</button>
+            <button class="btn" id="manageRegistrationsBtn"><i class="fas fa-users"></i> تسجيلات الكورسات</button>
         </div>
         <button id="logoutBtn" style="margin-top: 20px; background: #FFDDDD; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; color: #B33; display: block; margin: 20px auto 0;">🚪 تسجيل خروج</button>
 
@@ -294,6 +305,13 @@
             <div id="contactsList"></div>
             <button class="back-btn" id="backFromContactsBtn">🔙 رجوع</button>
         </div>
+
+        <!-- قسم تسجيلات الكورسات (للمدير) -->
+        <div id="registrationsSection" style="display: none; margin-top: 30px;">
+            <h3 style="color: #1E6F9F; text-align: center;">📋 قائمة الطلاب المسجلين في الكورسات</h3>
+            <div id="registrationsList"></div>
+            <button class="back-btn" id="backFromRegistrationsBtn">🔙 رجوع</button>
+        </div>
     </div>
 
     <footer>♥ نرحب بأطفالنا وأهلنا الأعزاء ♥</footer>
@@ -311,12 +329,35 @@
     </div>
 </div>
 
-<!-- مودال عرض الكورسات للزوار -->
+<!-- مودال عرض الكورسات للزوار مع زر تسجيل -->
 <div id="viewCoursesModal" class="modal">
     <div class="modal-content">
         <div class="close-modal" id="closeCoursesModal">✖</div>
         <h2>📚 جميع الكورسات</h2>
         <div id="publicCoursesList" class="item-list"></div>
+    </div>
+</div>
+
+<!-- مودال تسجيل الطالب في كورس محدد -->
+<div id="registerCourseModal" class="modal">
+    <div class="modal-content">
+        <div class="close-modal" id="closeRegisterModal">✖</div>
+        <h2 id="registerCourseTitle">التسجيل في الكورس</h2>
+        <input type="hidden" id="selectedCourseId">
+        <div class="form-group">
+            <input type="text" id="studentName" placeholder="الاسم كاملاً" required>
+        </div>
+        <div class="form-group">
+            <input type="email" id="studentEmail" placeholder="البريد الإلكتروني" required>
+        </div>
+        <div class="form-group">
+            <input type="tel" id="studentPhone" placeholder="رقم الهاتف (اختياري)">
+        </div>
+        <div class="form-group">
+            <textarea id="studentNote" placeholder="ملاحظات (اختياري)" rows="3"></textarea>
+        </div>
+        <button id="confirmRegistrationBtn" class="submit-btn">تأكيد التسجيل</button>
+        <div id="regStatus"></div>
     </div>
 </div>
 
@@ -412,6 +453,16 @@
     const viewContactModal = document.getElementById('viewContactModal');
     const closeContactModal = document.getElementById('closeContactModal');
     const publicContactList = document.getElementById('publicContactList');
+    const registerCourseModal = document.getElementById('registerCourseModal');
+    const closeRegisterModal = document.getElementById('closeRegisterModal');
+    const selectedCourseId = document.getElementById('selectedCourseId');
+    const studentName = document.getElementById('studentName');
+    const studentEmail = document.getElementById('studentEmail');
+    const studentPhone = document.getElementById('studentPhone');
+    const studentNote = document.getElementById('studentNote');
+    const confirmRegistrationBtn = document.getElementById('confirmRegistrationBtn');
+    const regStatus = document.getElementById('regStatus');
+    const registerCourseTitle = document.getElementById('registerCourseTitle');
 
     // عناصر التقديم على وظيفة
     const applicantName = document.getElementById('applicantName');
@@ -432,16 +483,20 @@
     const manageCoursesBtn = document.getElementById('manageCoursesBtn');
     const manageJobsBtn = document.getElementById('manageJobsBtn');
     const manageContactBtn = document.getElementById('manageContactBtn');
+    const manageRegistrationsBtn = document.getElementById('manageRegistrationsBtn');
     const adminMainButtons = document.getElementById('adminMainButtons');
     const coursesSection = document.getElementById('coursesSection');
     const jobsSection = document.getElementById('jobsSection');
     const contactsSection = document.getElementById('contactsSection');
+    const registrationsSection = document.getElementById('registrationsSection');
     const backFromCoursesBtn = document.getElementById('backFromCoursesBtn');
     const backFromJobsBtn = document.getElementById('backFromJobsBtn');
     const backFromContactsBtn = document.getElementById('backFromContactsBtn');
+    const backFromRegistrationsBtn = document.getElementById('backFromRegistrationsBtn');
     const coursesListDiv = document.getElementById('coursesList');
     const jobsListDiv = document.getElementById('jobsList');
     const contactsListDiv = document.getElementById('contactsList');
+    const registrationsListDiv = document.getElementById('registrationsList');
     const addCourseBtn = document.getElementById('addCourseBtn');
     const addJobBtn = document.getElementById('addJobBtn');
     const addContactBtn = document.getElementById('addContactBtn');
@@ -465,6 +520,7 @@
         coursesSection.style.display = 'none';
         jobsSection.style.display = 'none';
         contactsSection.style.display = 'none';
+        registrationsSection.style.display = 'none';
         adminMainButtons.style.display = 'grid';
     }
 
@@ -486,28 +542,48 @@
             let html = '';
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
+                const courseId = docSnap.id;
                 html += `
-                    <div class="public-card">
+                    <div class="public-card" data-course-id="${courseId}">
                         <div style="display:flex; gap:10px; align-items:center;">
                             ${data.imageUrl ? `<img src="${data.imageUrl}" style="width:60px; height:60px; border-radius:16px; object-fit:cover;">` : '<div style="font-size:2rem;">📘</div>'}
-                            <div>
+                            <div style="flex:1">
                                 <h3>${escapeHtml(data.title)}</h3>
                                 <p>${escapeHtml(data.description)}</p>
                                 <strong>💰 ${escapeHtml(data.price)}</strong>
                             </div>
                         </div>
+                        <button class="register-btn" data-id="${courseId}" data-title="${escapeHtml(data.title)}">سجل الآن</button>
                     </div>
                 `;
             });
             publicCoursesList.innerHTML = html;
+            // إضافة حدث النقر على أزرار التسجيل
+            document.querySelectorAll('.register-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = btn.getAttribute('data-id');
+                    const title = btn.getAttribute('data-title');
+                    openRegistrationModal(id, title);
+                });
+            });
         } catch (error) {
             publicCoursesList.innerHTML = '<p style="color:red;">فشل تحميل الكورسات</p>';
         }
     }
 
+    function openRegistrationModal(courseId, courseTitle) {
+        selectedCourseId.value = courseId;
+        registerCourseTitle.innerText = `التسجيل في كورس: ${courseTitle}`;
+        studentName.value = '';
+        studentEmail.value = '';
+        studentPhone.value = '';
+        studentNote.value = '';
+        regStatus.innerHTML = '';
+        registerCourseModal.style.display = 'flex';
+    }
+
     async function displayJobsPublic() {
         publicJobsList.innerHTML = '<div style="text-align:center;">⏳ جاري التحميل...</div>';
-        // ملء قائمة الوظائف في المودال وتحديث قائمة الاختيار
         try {
             const q = query(collection(db, "jobs"), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
@@ -557,7 +633,12 @@
                 else if (data.type === 'instagram') href = `https://instagram.com/${data.value}`;
                 else if (data.type === 'address') href = `https://maps.google.com/?q=${encodeURIComponent(data.value)}`;
                 else href = data.value;
-                html += `<a href="${href}" target="_blank" class="contact-badge"><i class="fas ${data.type === 'phone' ? 'fa-phone' : (data.type === 'whatsapp' ? 'fab fa-whatsapp' : (data.type === 'email' ? 'fa-envelope' : 'fa-link'))}"></i> ${escapeHtml(data.value)}</a>`;
+                let iconClass = '';
+                if (data.type === 'phone') iconClass = 'fas fa-phone';
+                else if (data.type === 'whatsapp') iconClass = 'fab fa-whatsapp';
+                else if (data.type === 'email') iconClass = 'fas fa-envelope';
+                else iconClass = 'fas fa-link';
+                html += `<a href="${href}" target="_blank" class="contact-badge"><i class="${iconClass}"></i> ${escapeHtml(data.value)}</a>`;
             });
             html += '</div>';
             publicContactList.innerHTML = html;
@@ -627,13 +708,51 @@
         } catch(e) { contactsListDiv.innerHTML = '<p style="color:red;">خطأ</p>'; }
     }
 
+    async function loadRegistrations() {
+        registrationsListDiv.innerHTML = '⏳ جاري التحميل...';
+        try {
+            const q = query(collection(db, "courseRegistrations"), orderBy("createdAt", "desc"));
+            const snapshot = await getDocs(q);
+            if (snapshot.empty) { registrationsListDiv.innerHTML = '<p>لا توجد تسجيلات حتى الآن</p>'; return; }
+            let html = '';
+            for (const docSnap of snapshot.docs) {
+                const data = docSnap.data();
+                // جلب اسم الكورس من معرف الكورس المخزن
+                let courseTitle = 'كورس غير معروف';
+                if (data.courseId) {
+                    const courseRef = doc(db, "courses", data.courseId);
+                    const courseSnap = await getDoc(courseRef);
+                    if (courseSnap.exists()) courseTitle = courseSnap.data().title;
+                }
+                html += `
+                    <div class="item-card">
+                        <div>📋</div>
+                        <div class="item-info">
+                            <strong>${escapeHtml(data.studentName)}</strong><br>
+                            البريد: ${escapeHtml(data.studentEmail)}<br>
+                            الهاتف: ${escapeHtml(data.studentPhone || 'غير موجود')}<br>
+                            الكورس: ${escapeHtml(courseTitle)}<br>
+                            ملاحظات: ${escapeHtml(data.note || 'لا توجد')}<br>
+                            <small>تاريخ التسجيل: ${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small>
+                        </div>
+                        <button data-id="${docSnap.id}" class="delete-btn delete-reg">🗑️ حذف</button>
+                    </div>
+                `;
+            }
+            registrationsListDiv.innerHTML = html;
+            document.querySelectorAll('.delete-reg').forEach(btn => btn.addEventListener('click', async () => {
+                if (confirm('حذف هذا التسجيل؟')) { await deleteDoc(doc(db, "courseRegistrations", btn.dataset.id)); loadRegistrations(); }
+            }));
+        } catch(e) { registrationsListDiv.innerHTML = '<p style="color:red;">خطأ في تحميل التسجيلات</p>'; console.error(e); }
+    }
+
     // إضافة كورس
     addCourseBtn.addEventListener('click', async () => {
         const title = document.getElementById('courseTitle').value.trim();
         const desc = document.getElementById('courseDesc').value.trim();
         const price = document.getElementById('coursePrice').value.trim();
         const img = document.getElementById('courseImage').value.trim();
-        if (!title || !desc || !price) return alert('املأ الحقول');
+        if (!title || !desc || !price) return alert('املأ الحقول الأساسية');
         await addDoc(collection(db, "courses"), { title, description: desc, price, imageUrl: img, createdAt: new Date() });
         alert('تمت الإضافة');
         document.getElementById('courseTitle').value = ''; document.getElementById('courseDesc').value = ''; document.getElementById('coursePrice').value = ''; document.getElementById('courseImage').value = '';
@@ -661,6 +780,33 @@
         loadContacts();
     });
 
+    // تأكيد تسجيل طالب في كورس
+    confirmRegistrationBtn.addEventListener('click', async () => {
+        const courseId = selectedCourseId.value;
+        const name = studentName.value.trim();
+        const email = studentEmail.value.trim();
+        const phone = studentPhone.value.trim();
+        const note = studentNote.value.trim();
+        if (!name || !email) {
+            regStatus.innerText = '❌ الاسم والبريد الإلكتروني مطلوبان';
+            return;
+        }
+        try {
+            await addDoc(collection(db, "courseRegistrations"), {
+                courseId,
+                studentName: name,
+                studentEmail: email,
+                studentPhone: phone,
+                note,
+                createdAt: new Date()
+            });
+            regStatus.innerText = '✅ تم التسجيل بنجاح! سيتم التواصل معك قريباً.';
+            setTimeout(() => registerCourseModal.style.display = 'none', 2000);
+        } catch (err) {
+            regStatus.innerText = '⚠️ حدث خطأ، حاول مرة أخرى';
+        }
+    });
+
     // أزرار التنقل للمدير
     manageCoursesBtn.onclick = () => { adminMainButtons.style.display = 'none'; coursesSection.style.display = 'block'; loadCourses(); };
     backFromCoursesBtn.onclick = () => { coursesSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
@@ -668,12 +814,20 @@
     backFromJobsBtn.onclick = () => { jobsSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
     manageContactBtn.onclick = () => { adminMainButtons.style.display = 'none'; contactsSection.style.display = 'block'; loadContacts(); };
     backFromContactsBtn.onclick = () => { contactsSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
+    manageRegistrationsBtn.onclick = () => { adminMainButtons.style.display = 'none'; registrationsSection.style.display = 'block'; loadRegistrations(); };
+    backFromRegistrationsBtn.onclick = () => { registrationsSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
 
     // ======================== المصادقة ========================
     onAuthStateChanged(auth, (user) => { if (user) showAdminPanel(); else showPublicUI(); });
     adminBtn.onclick = () => { loginModal.style.display = 'flex'; loginMessage.innerHTML = ''; };
     closeModalBtn.onclick = () => loginModal.style.display = 'none';
-    window.onclick = (e) => { if (e.target === loginModal) loginModal.style.display = 'none'; if (e.target === viewCoursesModal) viewCoursesModal.style.display = 'none'; if (e.target === viewJobsModal) viewJobsModal.style.display = 'none'; if (e.target === viewContactModal) viewContactModal.style.display = 'none'; };
+    window.onclick = (e) => {
+        if (e.target === loginModal) loginModal.style.display = 'none';
+        if (e.target === viewCoursesModal) viewCoursesModal.style.display = 'none';
+        if (e.target === viewJobsModal) viewJobsModal.style.display = 'none';
+        if (e.target === viewContactModal) viewContactModal.style.display = 'none';
+        if (e.target === registerCourseModal) registerCourseModal.style.display = 'none';
+    };
     loginSubmit.onclick = async () => {
         const email = loginEmail.value.trim(), pwd = loginPassword.value.trim();
         if (!email || !pwd) return loginMessage.innerText = 'أدخل البريد وكلمة السر';
@@ -685,13 +839,14 @@
     };
     logoutBtn.onclick = async () => { await signOut(auth); alert('تم الخروج'); };
 
-    // ======================== أزرار الزوار (عرض البيانات) ========================
+    // أزرار الزوار
     coursesBtn.onclick = () => { viewCoursesModal.style.display = 'flex'; displayCoursesPublic(); };
     closeCoursesModal.onclick = () => viewCoursesModal.style.display = 'none';
     jobBtn.onclick = () => { viewJobsModal.style.display = 'flex'; displayJobsPublic(); };
     closeJobsModal.onclick = () => viewJobsModal.style.display = 'none';
     contactBtn.onclick = () => { viewContactModal.style.display = 'flex'; displayContactInfoPublic(); };
     closeContactModal.onclick = () => viewContactModal.style.display = 'none';
+    closeRegisterModal.onclick = () => registerCourseModal.style.display = 'none';
 
     // تقديم طلب وظيفة
     submitApplicationBtn.onclick = async () => {
