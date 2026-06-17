@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -731,7 +732,7 @@
         <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" style="width:100%; margin-bottom:15px; padding:12px; border-radius:30px;">
         <input type="password" id="loginPassword" placeholder="كلمة المرور" style="width:100%; margin-bottom:15px; padding:12px; border-radius:30px;">
         <button id="loginSubmitBtn" class="submit-btn">دخول</button>
-        <div id="loginMessage" class="message" style="margin-top:12px; color:red;"></div>
+        <div id="loginMessage" style="margin-top:12px; color:red;"></div>
     </div>
 </div>
 
@@ -779,7 +780,7 @@
     </div>
 </div>
 
-<!-- مودال عرض الوظائف للزوار + نموذج التقديم -->
+<!-- ===== مودال تقديم الوظيفة (المطور) ===== -->
 <div id="viewJobsModal" class="modal">
     <div class="modal-content">
         <div class="close-modal" id="closeJobsModal">✖</div>
@@ -788,10 +789,42 @@
         <div id="publicJobsList" class="item-list"></div>
         <hr style="margin: 20px 0;">
         <h3>📝 قدم على وظيفة</h3>
+
+        <!-- الحقول الأساسية -->
         <div class="form-group"><input type="text" id="applicantName" placeholder="الاسم كاملاً (إجباري)" required></div>
         <div class="form-group"><input type="tel" id="applicantPhone" placeholder="رقم الهاتف (إجباري)" required></div>
-        <div class="form-group"><select id="selectedJobId"><option value="">اختر الوظيفة</option></select></div>
-        <div class="form-group"><textarea id="applicantCV" placeholder="رابط السيرة الذاتية (إجباري)" rows="3" required></textarea></div>
+        <div class="form-group"><input type="email" id="applicantEmail" placeholder="البريد الإلكتروني (إجباري)" required></div>
+        <div class="form-group">
+            <select id="selectedJobId"><option value="">اختر الوظيفة (إجباري)</option></select>
+        </div>
+
+        <!-- معلومات إضافية -->
+        <div class="form-group"><input type="date" id="applicantBirthdate" placeholder="تاريخ الميلاد"></div>
+        <div class="form-group">
+            <select id="applicantGender">
+                <option value="">الجنس</option>
+                <option value="ذكر">ذكر</option>
+                <option value="أنثى">أنثى</option>
+            </select>
+        </div>
+        <div class="form-group"><input type="text" id="applicantCity" placeholder="المدينة"></div>
+        <div class="form-group">
+            <select id="applicantEducation">
+                <option value="">المؤهل العلمي</option>
+                <option value="ثانوية">ثانوية</option>
+                <option value="دبلوم">دبلوم</option>
+                <option value="بكالوريوس">بكالوريوس</option>
+                <option value="ماجستير">ماجستير</option>
+                <option value="دكتوراه">دكتوراه</option>
+            </select>
+        </div>
+        <div class="form-group"><input type="number" id="applicantExperience" placeholder="سنوات الخبرة" min="0"></div>
+        <div class="form-group"><textarea id="applicantSkills" placeholder="المهارات (مثال: قيادة، تواصل، برمجة...)" rows="2"></textarea></div>
+        <div class="form-group">
+
+        </div>
+        <div class="form-group"><textarea id="applicantCV" placeholder="رابط السيرة الذاتية (إجباري)" rows="2" required></textarea></div>
+
         <button id="submitApplicationBtn" class="submit-btn">إرسال الطلب</button>
         <div id="applicationStatus" style="margin-top:12px;"></div>
     </div>
@@ -836,21 +869,14 @@
     const db = getFirestore(app);
 
     // ===== تفعيل العمل دون اتصال (Offline) =====
-    enableIndexedDbPersistence(db).catch((err) => {
-        console.warn("Persistence not available:", err);
-    });
+    enableIndexedDbPersistence(db).catch(() => {});
 
     // ===== إشعارات (Toast) =====
     function showToast(message, type = 'info', duration = 3000) {
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
-        const icons = {
-            success: '✅',
-            error: '❌',
-            warning: '⚠️',
-            info: 'ℹ️'
-        };
+        const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
         toast.innerHTML = `${icons[type] || 'ℹ️'} ${message}`;
         container.appendChild(toast);
         setTimeout(() => {
@@ -884,15 +910,9 @@
 
     // ===== مودال السياسة =====
     const policyModal = document.getElementById('policyModal');
-    document.getElementById('policyBtn').addEventListener('click', () => {
-        policyModal.style.display = 'flex';
-    });
-    document.getElementById('closePolicyModal').addEventListener('click', () => {
-        policyModal.style.display = 'none';
-    });
-    window.addEventListener('click', (e) => {
-        if (e.target === policyModal) policyModal.style.display = 'none';
-    });
+    document.getElementById('policyBtn').addEventListener('click', () => policyModal.style.display = 'flex');
+    document.getElementById('closePolicyModal').addEventListener('click', () => policyModal.style.display = 'none');
+    window.addEventListener('click', (e) => { if (e.target === policyModal) policyModal.style.display = 'none'; });
 
     // ===== عناصر الواجهة العامة =====
     const publicButtons = {
@@ -931,12 +951,24 @@
     const voteComment = document.getElementById('voteComment');
     const submitVoteBtn = document.getElementById('submitVoteBtn');
     const voteStatus = document.getElementById('voteStatus');
+
+    // ===== عناصر نموذج التقديم على الوظيفة (المطور) =====
     const applicantName = document.getElementById('applicantName');
     const applicantPhone = document.getElementById('applicantPhone');
+    const applicantEmail = document.getElementById('applicantEmail');
     const selectedJobId = document.getElementById('selectedJobId');
+    const applicantBirthdate = document.getElementById('applicantBirthdate');
+    const applicantGender = document.getElementById('applicantGender');
+    const applicantCity = document.getElementById('applicantCity');
+    const applicantEducation = document.getElementById('applicantEducation');
+    const applicantExperience = document.getElementById('applicantExperience');
+    const applicantSkills = document.getElementById('applicantSkills');
+    const applicantLicense = document.getElementById('applicantLicense');
     const applicantCV = document.getElementById('applicantCV');
     const submitApplicationBtn = document.getElementById('submitApplicationBtn');
     const applicationStatus = document.getElementById('applicationStatus');
+
+    // ===== عناصر التواصل =====
     const senderName = document.getElementById('senderName');
     const senderEmail = document.getElementById('senderEmail');
     const senderMessage = document.getElementById('senderMessage');
@@ -1080,7 +1112,7 @@
                 selectedJobId.innerHTML = '<option value="">لا توجد وظائف</option>';
                 return;
             }
-            let options = '<option value="">اختر الوظيفة</option>';
+            let options = '<option value="">اختر الوظيفة (إجباري)</option>';
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
                 allJobsData.push({ id: docSnap.id, ...data });
@@ -1249,7 +1281,7 @@
                     const jobSnap = await getDoc(jobRef);
                     if (jobSnap.exists()) jobTitle = jobSnap.data().title;
                 }
-                html += `<div class="item-card"><div>👤</div><div class="item-info"><strong>${escapeHtml(data.name)}</strong><br>📱 ${escapeHtml(data.phone)}<br>💼 ${escapeHtml(jobTitle)}<br>📄 <a href="${escapeHtml(data.cv)}" target="_blank">${escapeHtml(data.cv)}</a><br><small>${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small></div><button data-id="${docSnap.id}" class="delete-btn delete-app">🗑️ حذف</button></div>`;
+                html += `<div class="item-card"><div>👤</div><div class="item-info"><strong>${escapeHtml(data.name)}</strong><br>📱 ${escapeHtml(data.phone)}<br>✉️ ${escapeHtml(data.email)}<br>📅 ${data.birthdate || 'غير محدد'}<br>⚤ ${data.gender || 'غير محدد'}<br>🏙️ ${data.city || 'غير محدد'}<br>🎓 ${data.education || 'غير محدد'}<br>⏳ ${data.experience || 0} سنوات<br>🛠️ ${escapeHtml(data.skills || 'لا توجد')}<br>🚗 ${data.license || 'غير محدد'}<br>💼 ${escapeHtml(jobTitle)}<br>📄 <a href="${escapeHtml(data.cv)}" target="_blank">${escapeHtml(data.cv)}</a><br><small>${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small></div><button data-id="${docSnap.id}" class="delete-btn delete-app">🗑️ حذف</button></div>`;
             }
             applicationsListDiv.innerHTML = html;
             document.querySelectorAll('.delete-app').forEach(btn => btn.addEventListener('click', async () => {
@@ -1409,19 +1441,72 @@
         });
     });
 
-    // ===== تقديم طلب وظيفة =====
+    // ===== تقديم طلب وظيفة (المطور) =====
     submitApplicationBtn.addEventListener('click', async () => {
         const name = applicantName.value.trim();
         const phone = applicantPhone.value.trim();
+        const email = applicantEmail.value.trim();
         const jobId = selectedJobId.value;
+        const birthdate = applicantBirthdate.value;
+        const gender = applicantGender.value;
+        const city = applicantCity.value.trim();
+        const education = applicantEducation.value;
+        const experience = applicantExperience.value;
+        const skills = applicantSkills.value.trim();
+        const license = applicantLicense.value;
         const cv = applicantCV.value.trim();
-        if (!name || !phone || !jobId || !cv) { applicationStatus.innerText = '❌ جميع الحقول مطلوبة'; return; }
-        await addDoc(collection(db, "applications"), { name, phone, jobId, cv, createdAt: new Date() });
-        applicationStatus.innerText = '✅ تم الإرسال';
-        showToast('تم إرسال طلبك', 'success');
-        applicantName.value = ''; applicantPhone.value = ''; selectedJobId.value = ''; applicantCV.value = '';
-        setTimeout(() => applicationStatus.innerText = '', 3000);
-        updateStats();
+
+        // التحقق من الحقول الإجبارية
+        if (!name || !phone || !email || !jobId || !cv) {
+            applicationStatus.innerText = '❌ الحقول المطلوبة: الاسم، الهاتف، البريد، الوظيفة، السيرة';
+            return;
+        }
+
+        // التحقق من صحة البريد الإلكتروني
+        if (!email.includes('@') || !email.includes('.')) {
+            applicationStatus.innerText = '❌ البريد الإلكتروني غير صحيح';
+            return;
+        }
+
+        try {
+            await addDoc(collection(db, "applications"), {
+                name,
+                phone,
+                email,
+                jobId,
+                birthdate,
+                gender,
+                city,
+                education,
+                experience: experience ? parseInt(experience) : 0,
+                skills,
+                license,
+                cv,
+                createdAt: new Date()
+            });
+            applicationStatus.innerText = '✅ تم إرسال طلبك بنجاح';
+            showToast('تم إرسال طلبك', 'success');
+
+            // تفريغ الحقول
+            applicantName.value = '';
+            applicantPhone.value = '';
+            applicantEmail.value = '';
+            selectedJobId.value = '';
+            applicantBirthdate.value = '';
+            applicantGender.value = '';
+            applicantCity.value = '';
+            applicantEducation.value = '';
+            applicantExperience.value = '';
+            applicantSkills.value = '';
+            applicantLicense.value = '';
+            applicantCV.value = '';
+
+            setTimeout(() => applicationStatus.innerText = '', 3000);
+            updateStats();
+        } catch (error) {
+            applicationStatus.innerText = '⚠️ حدث خطأ، حاول مرة أخرى';
+            showToast('فشل الإرسال', 'error');
+        }
     });
 
     // ===== إرسال رسالة =====
