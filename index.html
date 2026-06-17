@@ -6,6 +6,7 @@
     <title>مركز ICAN - تدريب - قياس النفس - تأهيل - استشارات</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ========== الأساسيات ========== */
         * {
             margin: 0;
             padding: 0;
@@ -20,6 +21,7 @@
             justify-content: center;
             padding: 20px;
         }
+
         /* ===== شاشة الترحيب ===== */
         #splashScreen {
             position: fixed;
@@ -33,7 +35,12 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        #splashScreen.hide {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
         }
         #splashScreen img {
             max-width: 300px;
@@ -41,6 +48,11 @@
             height: auto;
             border-radius: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: pulse 2s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
         }
         #splashScreen h1 {
             margin-top: 20px;
@@ -52,6 +64,22 @@
             font-size: 1.2rem;
             margin-top: 10px;
         }
+        #skipSplash {
+            margin-top: 30px;
+            background: transparent;
+            border: 2px solid #1E6F9F;
+            color: #1E6F9F;
+            padding: 8px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        #skipSplash:hover {
+            background: #1E6F9F;
+            color: white;
+        }
+
         /* ===== الكارد الرئيسي ===== */
         .card {
             max-width: 1100px;
@@ -61,8 +89,14 @@
             box-shadow: 0 25px 45px rgba(0, 50, 100, 0.12);
             padding: 40px 30px 50px;
             border: 1px solid #D6E9FF;
-            display: none; /* يظهر بعد اختفاء شاشة الترحيب */
+            display: none;
+            animation: fadeInUp 0.6s ease;
         }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* ===== الهيدر ===== */
         .header {
             display: flex;
@@ -110,6 +144,7 @@
             margin-top: 10px;
             font-weight: 500;
         }
+
         /* ===== الأزرار الرئيسية الثلاثة ===== */
         .main-buttons {
             display: grid;
@@ -126,7 +161,7 @@
             font-weight: bold;
             color: #1A5D8C;
             cursor: pointer;
-            transition: 0.25s;
+            transition: 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -141,25 +176,30 @@
         }
         .main-btn .arrow {
             font-size: 1rem;
-            transition: transform 0.3s;
+            transition: transform 0.4s ease;
         }
         .main-btn .arrow.open {
             transform: rotate(180deg);
         }
+        .main-btn.services-active {
+            background: #D9EEFF;
+            border-color: #5BA3D9;
+            box-shadow: 0 8px 0 #5BA3D9;
+        }
+
         /* ===== القائمة الفرعية للخدمات ===== */
         #servicesSubMenu {
             display: none;
             margin-top: 20px;
-            animation: fadeIn 0.3s ease;
+            animation: slideDown 0.4s ease;
         }
         #servicesSubMenu.show {
             display: block;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* ===== الأزرار الفرعية (نفس تصميم btn سابقاً) ===== */
         .sub-btn {
             background: #F0F8FF;
             border: 2px solid #C2E0FF;
@@ -169,7 +209,7 @@
             font-weight: bold;
             color: #1A5D8C;
             cursor: pointer;
-            transition: 0.25s;
+            transition: 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -184,6 +224,116 @@
             background: #E6F2FB;
             box-shadow: 0 9px 0 #B8D9F0;
         }
+
+        /* ===== إشعارات (Toast) ===== */
+        #toastContainer {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            padding: 14px 24px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            animation: slideIn 0.4s ease;
+            max-width: 400px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
+        .toast.info { background: #1E6F9F; }
+        .toast.warning { background: #ffc107; color: #333; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .toast.hide {
+            animation: slideOut 0.4s ease forwards;
+        }
+        @keyframes slideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(-50px); }
+        }
+
+        /* ===== مودال السياسة ===== */
+        .policy-content {
+            max-width: 600px;
+            text-align: right;
+            line-height: 1.8;
+        }
+        .policy-content h3 {
+            color: #1E6F9F;
+            margin-top: 15px;
+        }
+
+        /* ===== إحصائيات المدير ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0 25px;
+        }
+        .stat-card {
+            background: #F0F8FF;
+            border-radius: 24px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #D6E9FF;
+        }
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1E6F9F;
+        }
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: #2C7AB1;
+            margin-top: 4px;
+        }
+
+        /* ===== الإشعارات في لوحة المدير ===== */
+        .notification-item {
+            background: #F9F9FF;
+            border-radius: 16px;
+            padding: 12px 18px;
+            margin-bottom: 10px;
+            border-right: 4px solid #1E6F9F;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .notification-item .time {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* ===== البحث ===== */
+        .search-box {
+            width: 100%;
+            padding: 10px 18px;
+            border-radius: 30px;
+            border: 2px solid #CAE3FF;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            background: #FDFEFF;
+        }
+        .search-box:focus {
+            border-color: #5BA3D9;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(91,163,217,0.2);
+        }
+
         /* ===== باقي التنسيقات (مودالات، إلخ) ===== */
         .modal {
             display: none;
@@ -228,6 +378,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: 0.2s;
+        }
+        .close-modal:hover {
+            background: #DFEEFC;
         }
         .form-group {
             margin-bottom: 15px;
@@ -248,6 +402,10 @@
             cursor: pointer;
             width: 100%;
             font-size: 1.1rem;
+            transition: 0.3s;
+        }
+        button.submit-btn:hover {
+            background: #1A5D8C;
         }
         .item-list {
             display: flex;
@@ -272,6 +430,10 @@
             margin-top: 10px;
             display: inline-block;
             margin-left: 8px;
+            transition: 0.3s;
+        }
+        .register-btn:hover, .vote-btn:hover {
+            opacity: 0.8;
         }
         .vote-btn {
             background: #28a745;
@@ -286,6 +448,7 @@
         .stars span {
             cursor: pointer;
             display: inline-block;
+            transition: 0.2s;
         }
         .stars span:hover, .stars span.active {
             color: #ffc107;
@@ -300,6 +463,10 @@
             margin: 5px;
             text-decoration: none;
             color: #1A5D8C;
+            transition: 0.3s;
+        }
+        .contact-badge:hover {
+            background: #D9EEFF;
         }
         footer {
             text-align: center;
@@ -339,6 +506,10 @@
             border-radius: 30px;
             cursor: pointer;
             color: #B33;
+            transition: 0.3s;
+        }
+        .delete-btn:hover {
+            background: #FFCCCC;
         }
         .back-btn, .sub-tab {
             margin-top: 20px;
@@ -348,6 +519,10 @@
             border-radius: 30px;
             cursor: pointer;
             margin-left: 8px;
+            transition: 0.3s;
+        }
+        .back-btn:hover, .sub-tab:hover {
+            background: #CCC;
         }
         .sub-tab.active {
             background: #2E86C1;
@@ -362,13 +537,24 @@
             justify-content: space-between;
             align-items: center;
         }
+
+        /* ===== استجابة للشاشات الصغيرة ===== */
         @media (max-width: 550px) {
             .card { padding: 25px 18px; }
-            .main-buttons { grid-template-columns: 1fr; }
+            .main-buttons { grid-template-columns: 1fr; gap: 12px; }
             .sub-btn { font-size: 1rem; padding: 14px; }
             .header { flex-direction: column; align-items: center; }
-            .header-text h1 { font-size: 1.8rem; }
-            .logo-area, .header-spacer { width: 60px; height: 60px; }
+            .header-text h1 { font-size: 1.8rem; padding: 8px 20px; }
+            .logo-area { width: 70px; height: 60px; }
+            .logo-area img { max-height: 60px; max-width: 70px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            #toastContainer { left: 10px; right: 10px; bottom: 15px; }
+            .toast { max-width: 100%; font-size: 0.85rem; padding: 12px 18px; }
+        }
+        @media (max-width: 400px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .main-btn { font-size: 1rem; padding: 14px 8px; }
+            .main-btn i { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -379,12 +565,13 @@
     <img src="https://i.ibb.co/zVC3cbTs/logo-png.jpg" alt="شعار مركز ICAN">
     <h1>مركز ICAN</h1>
     <p>تدريب - قياس النفس - تأهيل - استشارات</p>
+    <button id="skipSplash">تخطي ⏭</button>
 </div>
 
 <!-- ===== المحتوى الرئيسي ===== -->
 <div class="card" id="mainContent">
 
-    <!-- الهيدر -->
+    <!-- ===== الهيدر ===== -->
     <div class="header">
         <div class="logo-area">
             <img src="https://i.ibb.co/zVC3cbTs/logo-png.jpg" alt="شعار المركز">
@@ -395,14 +582,14 @@
         </div>
     </div>
 
-    <!-- الأزرار الرئيسية الثلاثة -->
+    <!-- ===== الأزرار الرئيسية الثلاثة ===== -->
     <div class="main-buttons">
         <button class="main-btn" id="policyBtn"><i class="fas fa-gavel"></i> السياسة</button>
         <button class="main-btn" id="servicesBtn"><i class="fas fa-cogs"></i> الخدمات <span class="arrow" id="servicesArrow">▼</span></button>
         <button class="main-btn" id="contactMainBtn"><i class="fas fa-phone-alt"></i> التواصل</button>
     </div>
 
-    <!-- القائمة الفرعية للخدمات (تظهر عند الضغط على "الخدمات") -->
+    <!-- ===== القائمة الفرعية للخدمات ===== -->
     <div id="servicesSubMenu">
         <button class="sub-btn" id="adminBtn"><i class="fas fa-chalkboard-user"></i> الإدارة</button>
         <button class="sub-btn" id="coursesBtn"><i class="fas fa-book-open"></i> كورسات</button>
@@ -414,22 +601,39 @@
     <div id="adminPanel" style="display: none;">
         <div style="text-align: center; margin: 20px 0 10px;">
             <h3 style="color: #1E6F9F;">👋 مرحباً مدير المركز</h3>
-            <p style="color: #2C7AB1;">اختر ما تريد إدارته</p>
+            <p style="color: #2C7AB1;">نظرة سريعة على المنصة</p>
         </div>
-        <div class="buttons-grid" id="adminMainButtons" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+
+        <!-- ===== إحصائيات سريعة ===== -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card"><div class="number" id="statCourses">0</div><div class="label">📚 الكورسات</div></div>
+            <div class="stat-card"><div class="number" id="statRegistrations">0</div><div class="label">👨‍🎓 المسجلين</div></div>
+            <div class="stat-card"><div class="number" id="statApplications">0</div><div class="label">📝 طلبات الوظائف</div></div>
+            <div class="stat-card"><div class="number" id="statMessages">0</div><div class="label">💬 رسائل التواصل</div></div>
+        </div>
+
+        <!-- ===== الإشعارات الجديدة ===== -->
+        <div style="margin: 15px 0 20px;">
+            <h4 style="color: #1E6F9F;">🔔 آخر النشاطات</h4>
+            <div id="notificationsList" style="max-height: 200px; overflow-y: auto; margin-top: 10px;"></div>
+        </div>
+
+        <!-- ===== أزرار الإدارة ===== -->
+        <div class="buttons-grid" id="adminMainButtons" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
             <button class="sub-btn" id="manageCoursesBtn"><i class="fas fa-book"></i> الكورسات</button>
-            <button class="sub-btn" id="manageJobsBtn"><i class="fas fa-briefcase"></i> الوظائف (إدارة)</button>
+            <button class="sub-btn" id="manageJobsBtn"><i class="fas fa-briefcase"></i> الوظائف</button>
             <button class="sub-btn" id="manageApplicationsBtn"><i class="fas fa-file-alt"></i> طلبات الوظائف</button>
             <button class="sub-btn" id="manageContactBtn"><i class="fas fa-envelope"></i> التواصل</button>
         </div>
         <button id="logoutBtn" style="margin-top: 20px; background: #FFDDDD; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; color: #B33; display: block; margin: 20px auto 0;">🚪 تسجيل خروج</button>
 
+        <!-- ===== أقسام الإدارة ===== -->
         <!-- قسم الكورسات -->
         <div id="coursesSection" style="display: none; margin-top: 30px;">
-            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
                 <button class="sub-tab" id="coursesListTab">📚 قائمة الكورسات</button>
                 <button class="sub-tab" id="registrationsTab">📋 تسجيلات الطلاب</button>
-                <button class="sub-tab" id="statsTab">📊 إحصائيات الكورسات</button>
+                <button class="sub-tab" id="statsTab">📊 إحصائيات</button>
             </div>
             <div id="coursesListSubsection">
                 <h3 style="color: #1E6F9F; text-align: center;">➕ إضافة كورس جديد</h3>
@@ -500,6 +704,24 @@
     <footer>♥ نرحب بأطفالنا وأهلنا الأعزاء ♥</footer>
 </div>
 
+<!-- ===== مودال السياسة ===== -->
+<div id="policyModal" class="modal">
+    <div class="modal-content policy-content">
+        <div class="close-modal" id="closePolicyModal">✖</div>
+        <h2>📜 سياسة الخصوصية</h2>
+        <p>نحن في مركز ICAN نلتزم بحماية خصوصية بياناتك. جميع المعلومات التي تقدمها تُستخدم فقط للأغراض التالية:</p>
+        <h3>1. التسجيل في الكورسات</h3>
+        <p>تُستخدم بياناتك للتواصل معك بشأن الكورسات التي سجلت فيها.</p>
+        <h3>2. التقديم على الوظائف</h3>
+        <p>تُستخدم بياناتك لمراجعة طلبك والتواصل معك بشأنه.</p>
+        <h3>3. التواصل</h3>
+        <p>تُستخدم بياناتك للرد على استفساراتك ورسائلك.</p>
+        <h3>4. مشاركة البيانات</h3>
+        <p>نحن لا نشارك بياناتك مع أي طرف ثالث دون موافقتك المسبقة.</p>
+        <p style="margin-top:20px; color:#888;">آخر تحديث: يونيو 2026</p>
+    </div>
+</div>
+
 <!-- ===== جميع المودالات ===== -->
 <!-- مودال تسجيل الدخول -->
 <div id="loginModal" class="modal">
@@ -509,7 +731,7 @@
         <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" style="width:100%; margin-bottom:15px; padding:12px; border-radius:30px;">
         <input type="password" id="loginPassword" placeholder="كلمة المرور" style="width:100%; margin-bottom:15px; padding:12px; border-radius:30px;">
         <button id="loginSubmitBtn" class="submit-btn">دخول</button>
-        <div id="loginMessage" class="message"></div>
+        <div id="loginMessage" class="message" style="margin-top:12px; color:red;"></div>
     </div>
 </div>
 
@@ -518,6 +740,7 @@
     <div class="modal-content">
         <div class="close-modal" id="closeCoursesModal">✖</div>
         <h2>📚 جميع الكورسات</h2>
+        <input type="text" id="searchCourses" class="search-box" placeholder="🔍 ابحث عن كورس...">
         <div id="publicCoursesList" class="item-list"></div>
     </div>
 </div>
@@ -528,20 +751,12 @@
         <div class="close-modal" id="closeRegisterModal">✖</div>
         <h2 id="registerCourseTitle">التسجيل في الكورس</h2>
         <input type="hidden" id="selectedCourseId">
-        <div class="form-group">
-            <input type="text" id="studentName" placeholder="الاسم كاملاً (إجباري)" required>
-        </div>
-        <div class="form-group">
-            <input type="tel" id="studentPhone" placeholder="رقم الهاتف (إجباري)" required>
-        </div>
-        <div class="form-group">
-            <input type="email" id="studentEmail" placeholder="البريد الإلكتروني (اختياري)">
-        </div>
-        <div class="form-group">
-            <textarea id="studentNote" placeholder="ملاحظات (اختياري)" rows="3"></textarea>
-        </div>
+        <div class="form-group"><input type="text" id="studentName" placeholder="الاسم كاملاً (إجباري)" required></div>
+        <div class="form-group"><input type="tel" id="studentPhone" placeholder="رقم الهاتف (إجباري)" required></div>
+        <div class="form-group"><input type="email" id="studentEmail" placeholder="البريد الإلكتروني (اختياري)"></div>
+        <div class="form-group"><textarea id="studentNote" placeholder="ملاحظات (اختياري)" rows="3"></textarea></div>
         <button id="confirmRegistrationBtn" class="submit-btn">تأكيد التسجيل</button>
-        <div id="regStatus"></div>
+        <div id="regStatus" style="margin-top:12px;"></div>
     </div>
 </div>
 
@@ -554,19 +769,13 @@
         <div class="form-group">
             <label>اختر التقييم (من 1 إلى 5 نجوم):</label>
             <div class="stars" id="starRating">
-                <span data-value="1">★</span>
-                <span data-value="2">★</span>
-                <span data-value="3">★</span>
-                <span data-value="4">★</span>
-                <span data-value="5">★</span>
+                <span data-value="1">★</span><span data-value="2">★</span><span data-value="3">★</span><span data-value="4">★</span><span data-value="5">★</span>
             </div>
             <input type="hidden" id="ratingValue" value="0">
         </div>
-        <div class="form-group">
-            <textarea id="voteComment" placeholder="تعليقك (اختياري)" rows="3"></textarea>
-        </div>
+        <div class="form-group"><textarea id="voteComment" placeholder="تعليقك (اختياري)" rows="3"></textarea></div>
         <button id="submitVoteBtn" class="submit-btn">إرسال التقييم</button>
-        <div id="voteStatus"></div>
+        <div id="voteStatus" style="margin-top:12px;"></div>
     </div>
 </div>
 
@@ -575,25 +784,16 @@
     <div class="modal-content">
         <div class="close-modal" id="closeJobsModal">✖</div>
         <h2>📋 الوظائف المتاحة</h2>
+        <input type="text" id="searchJobs" class="search-box" placeholder="🔍 ابحث عن وظيفة...">
         <div id="publicJobsList" class="item-list"></div>
         <hr style="margin: 20px 0;">
         <h3>📝 قدم على وظيفة</h3>
-        <div class="form-group">
-            <input type="text" id="applicantName" placeholder="الاسم كاملاً (إجباري)" required>
-        </div>
-        <div class="form-group">
-            <input type="tel" id="applicantPhone" placeholder="رقم الهاتف (إجباري)" required>
-        </div>
-        <div class="form-group">
-            <select id="selectedJobId">
-                <option value="">اختر الوظيفة</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <textarea id="applicantCV" placeholder="رابط السيرة الذاتية (إجباري)" rows="3" required></textarea>
-        </div>
+        <div class="form-group"><input type="text" id="applicantName" placeholder="الاسم كاملاً (إجباري)" required></div>
+        <div class="form-group"><input type="tel" id="applicantPhone" placeholder="رقم الهاتف (إجباري)" required></div>
+        <div class="form-group"><select id="selectedJobId"><option value="">اختر الوظيفة</option></select></div>
+        <div class="form-group"><textarea id="applicantCV" placeholder="رابط السيرة الذاتية (إجباري)" rows="3" required></textarea></div>
         <button id="submitApplicationBtn" class="submit-btn">إرسال الطلب</button>
-        <div id="applicationStatus"></div>
+        <div id="applicationStatus" style="margin-top:12px;"></div>
     </div>
 </div>
 
@@ -605,25 +805,22 @@
         <div id="publicContactList" style="margin-bottom: 20px;"></div>
         <hr>
         <h3>✉️ أرسل رسالة</h3>
-        <div class="form-group">
-            <input type="text" id="senderName" placeholder="الاسم">
-        </div>
-        <div class="form-group">
-            <input type="email" id="senderEmail" placeholder="البريد الإلكتروني">
-        </div>
-        <div class="form-group">
-            <textarea id="senderMessage" placeholder="نص الرسالة" rows="4"></textarea>
-        </div>
+        <div class="form-group"><input type="text" id="senderName" placeholder="الاسم"></div>
+        <div class="form-group"><input type="email" id="senderEmail" placeholder="البريد الإلكتروني"></div>
+        <div class="form-group"><textarea id="senderMessage" placeholder="نص الرسالة" rows="4"></textarea></div>
         <button id="sendMessageBtn" class="submit-btn">إرسال</button>
-        <div id="messageStatus"></div>
+        <div id="messageStatus" style="margin-top:12px;"></div>
     </div>
 </div>
+
+<!-- ===== حاوية الإشعارات ===== -->
+<div id="toastContainer"></div>
 
 <script type="module">
     // ===== Firebase Imports =====
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, getDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAfx0mHlH54zi85V-9URyX9USq3TE-Aqd0",
@@ -638,16 +835,43 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // ===== شاشة الترحيب =====
-    setTimeout(() => {
-        document.getElementById('splashScreen').style.opacity = '0';
-        setTimeout(() => {
-            document.getElementById('splashScreen').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-        }, 500);
-    }, 3000);
+    // ===== تفعيل العمل دون اتصال (Offline) =====
+    enableIndexedDbPersistence(db).catch((err) => {
+        console.warn("Persistence not available:", err);
+    });
 
-    // ===== إظهار/إخفاء قائمة الخدمات =====
+    // ===== إشعارات (Toast) =====
+    function showToast(message, type = 'info', duration = 3000) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        const icons = {
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️'
+        };
+        toast.innerHTML = `${icons[type] || 'ℹ️'} ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('hide');
+            setTimeout(() => toast.remove(), 400);
+        }, duration);
+    }
+
+    // ===== شاشة الترحيب =====
+    function hideSplash() {
+        const splash = document.getElementById('splashScreen');
+        splash.classList.add('hide');
+        setTimeout(() => {
+            splash.style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }, 800);
+    }
+    setTimeout(hideSplash, 3000);
+    document.getElementById('skipSplash').addEventListener('click', hideSplash);
+
+    // ===== القائمة الفرعية للخدمات =====
     const servicesBtn = document.getElementById('servicesBtn');
     const servicesSubMenu = document.getElementById('servicesSubMenu');
     const arrow = document.getElementById('servicesArrow');
@@ -655,10 +879,22 @@
     servicesBtn.addEventListener('click', () => {
         servicesSubMenu.classList.toggle('show');
         arrow.classList.toggle('open');
+        servicesBtn.classList.toggle('services-active');
     });
 
-    // ===== باقي الكود (نفس الكود السابق بالكامل) =====
-    // عناصر الواجهة العامة
+    // ===== مودال السياسة =====
+    const policyModal = document.getElementById('policyModal');
+    document.getElementById('policyBtn').addEventListener('click', () => {
+        policyModal.style.display = 'flex';
+    });
+    document.getElementById('closePolicyModal').addEventListener('click', () => {
+        policyModal.style.display = 'none';
+    });
+    window.addEventListener('click', (e) => {
+        if (e.target === policyModal) policyModal.style.display = 'none';
+    });
+
+    // ===== عناصر الواجهة العامة =====
     const publicButtons = {
         admin: document.getElementById('adminBtn'),
         courses: document.getElementById('coursesBtn'),
@@ -666,7 +902,7 @@
         contact: document.getElementById('contactBtn')
     };
 
-    // مودالات الزوار
+    // ===== مودالات الزوار =====
     const viewCoursesModal = document.getElementById('viewCoursesModal');
     const closeCoursesModal = document.getElementById('closeCoursesModal');
     const publicCoursesList = document.getElementById('publicCoursesList');
@@ -707,7 +943,7 @@
     const sendMessageBtn = document.getElementById('sendMessageBtn');
     const messageStatus = document.getElementById('messageStatus');
 
-    // عناصر لوحة المدير
+    // ===== عناصر لوحة المدير =====
     const adminPanel = document.getElementById('adminPanel');
     const manageCoursesBtn = document.getElementById('manageCoursesBtn');
     const manageJobsBtn = document.getElementById('manageJobsBtn');
@@ -746,8 +982,10 @@
     const loginPassword = document.getElementById('loginPassword');
     const loginMessage = document.getElementById('loginMessage');
     const logoutBtn = document.getElementById('logoutBtn');
+    const searchCourses = document.getElementById('searchCourses');
+    const searchJobs = document.getElementById('searchJobs');
 
-    // دوال مساعدة
+    // ===== دوال مساعدة =====
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -765,108 +1003,105 @@
         applicationsSection.style.display = 'none';
         contactsSection.style.display = 'none';
         adminMainButtons.style.display = 'grid';
+        updateStats();
+        loadNotifications();
     }
 
     function showPublicUI() {
         adminPanel.style.display = 'none';
     }
 
-    // عرض الكورسات للزوار
+    let allCoursesData = [];
+    let allJobsData = [];
+
+    // ===== عرض الكورسات للزوار مع بحث =====
     async function displayCoursesPublic() {
         publicCoursesList.innerHTML = '<div style="text-align:center;">⏳ جاري التحميل...</div>';
         try {
             const q = query(collection(db, "courses"), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
+            allCoursesData = [];
             if (snapshot.empty) {
                 publicCoursesList.innerHTML = '<p style="color:gray;">لا توجد كورسات حالياً</p>';
                 return;
             }
-            let html = '';
             snapshot.forEach(docSnap => {
-                const data = docSnap.data();
-                const courseId = docSnap.id;
-                html += `
-                    <div class="public-card">
-                        <div style="display:flex; gap:10px; align-items:center;">
-                            ${data.imageUrl ? `<img src="${data.imageUrl}" style="width:60px; height:60px; border-radius:16px; object-fit:cover;">` : '<div style="font-size:2rem;">📘</div>'}
-                            <div style="flex:1">
-                                <h3>${escapeHtml(data.title)}</h3>
-                                <p>${escapeHtml(data.description)}</p>
-                                <strong>💰 ${escapeHtml(data.price)}</strong>
-                            </div>
-                        </div>
-                        <div>
-                            <button class="register-btn" data-id="${courseId}" data-title="${escapeHtml(data.title)}">سجل الآن</button>
-                            <button class="vote-btn" data-id="${courseId}" data-title="${escapeHtml(data.title)}">🗳️ تصويت</button>
-                        </div>
-                    </div>
-                `;
+                allCoursesData.push({ id: docSnap.id, ...docSnap.data() });
             });
-            publicCoursesList.innerHTML = html;
-            document.querySelectorAll('.register-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = btn.getAttribute('data-id');
-                    const title = btn.getAttribute('data-title');
-                    openRegistrationModal(id, title);
-                });
-            });
-            document.querySelectorAll('.vote-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = btn.getAttribute('data-id');
-                    const title = btn.getAttribute('data-title');
-                    openVoteModal(id, title);
-                });
-            });
+            renderCoursesPublic(allCoursesData);
         } catch (error) {
             publicCoursesList.innerHTML = '<p style="color:red;">فشل تحميل الكورسات</p>';
         }
     }
 
-    function openRegistrationModal(courseId, courseTitle) {
-        selectedCourseId.value = courseId;
-        registerCourseTitle.innerText = `التسجيل في كورس: ${courseTitle}`;
-        studentName.value = '';
-        studentPhone.value = '';
-        studentEmail.value = '';
-        studentNote.value = '';
-        regStatus.innerHTML = '';
-        registerCourseModal.style.display = 'flex';
+    function renderCoursesPublic(courses) {
+        let html = '';
+        courses.forEach(data => {
+            const courseId = data.id;
+            html += `
+                <div class="public-card">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        ${data.imageUrl ? `<img src="${data.imageUrl}" style="width:60px; height:60px; border-radius:16px; object-fit:cover;">` : '<div style="font-size:2rem;">📘</div>'}
+                        <div style="flex:1">
+                            <h3>${escapeHtml(data.title)}</h3>
+                            <p>${escapeHtml(data.description)}</p>
+                            <strong>💰 ${escapeHtml(data.price)}</strong>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="register-btn" data-id="${courseId}" data-title="${escapeHtml(data.title)}">سجل الآن</button>
+                        <button class="vote-btn" data-id="${courseId}" data-title="${escapeHtml(data.title)}">🗳️ تصويت</button>
+                    </div>
+                </div>
+            `;
+        });
+        publicCoursesList.innerHTML = html;
+        document.querySelectorAll('.register-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                openRegistrationModal(btn.dataset.id, btn.dataset.title);
+            });
+        });
+        document.querySelectorAll('.vote-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                openVoteModal(btn.dataset.id, btn.dataset.title);
+            });
+        });
     }
 
-    function openVoteModal(courseId, courseTitle) {
-        voteCourseId.value = courseId;
-        voteCourseTitle.innerText = `تقييم كورس: ${courseTitle}`;
-        voteComment.value = '';
-        ratingValue.value = '0';
-        starSpans.forEach(span => span.classList.remove('active'));
-        voteStatus.innerHTML = '';
-        voteModal.style.display = 'flex';
-    }
-
+    // ===== عرض الوظائف للزوار مع بحث =====
     async function displayJobsPublic() {
         publicJobsList.innerHTML = '<div style="text-align:center;">⏳ جاري التحميل...</div>';
         try {
             const q = query(collection(db, "jobs"), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
+            allJobsData = [];
             if (snapshot.empty) {
                 publicJobsList.innerHTML = '<p style="color:gray;">لا توجد وظائف حالياً</p>';
                 selectedJobId.innerHTML = '<option value="">لا توجد وظائف</option>';
                 return;
             }
-            let html = '';
             let options = '<option value="">اختر الوظيفة</option>';
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
-                html += `<div class="public-card"><h3>${escapeHtml(data.title)}</h3><p>${escapeHtml(data.requirements)}</p><strong>📅 آخر موعد: ${escapeHtml(data.deadline)}</strong></div>`;
+                allJobsData.push({ id: docSnap.id, ...data });
                 options += `<option value="${docSnap.id}">${escapeHtml(data.title)}</option>`;
             });
-            publicJobsList.innerHTML = html;
+            renderJobsPublic(allJobsData);
             selectedJobId.innerHTML = options;
         } catch (error) {
             publicJobsList.innerHTML = '<p style="color:red;">فشل تحميل الوظائف</p>';
         }
     }
 
+    function renderJobsPublic(jobs) {
+        let html = '';
+        jobs.forEach(data => {
+            html += `<div class="public-card"><h3>${escapeHtml(data.title)}</h3><p>${escapeHtml(data.requirements)}</p><strong>📅 آخر موعد: ${escapeHtml(data.deadline)}</strong></div>`;
+        });
+        publicJobsList.innerHTML = html;
+    }
+
+    // ===== عرض وسائل التواصل =====
     async function displayContactInfoPublic() {
         publicContactList.innerHTML = '<div style="text-align:center;">⏳ جاري التحميل...</div>';
         try {
@@ -902,7 +1137,25 @@
         }
     }
 
-    // دوال المدير
+    // ===== مودالات التسجيل والتصويت =====
+    function openRegistrationModal(courseId, courseTitle) {
+        selectedCourseId.value = courseId;
+        registerCourseTitle.innerText = `التسجيل في كورس: ${courseTitle}`;
+        studentName.value = ''; studentPhone.value = ''; studentEmail.value = ''; studentNote.value = '';
+        regStatus.innerHTML = '';
+        registerCourseModal.style.display = 'flex';
+    }
+
+    function openVoteModal(courseId, courseTitle) {
+        voteCourseId.value = courseId;
+        voteCourseTitle.innerText = `تقييم كورس: ${courseTitle}`;
+        voteComment.value = ''; ratingValue.value = '0';
+        starSpans.forEach(span => span.classList.remove('active'));
+        voteStatus.innerHTML = '';
+        voteModal.style.display = 'flex';
+    }
+
+    // ===== دوال المدير =====
     async function loadCourses() {
         coursesListDiv.innerHTML = '⏳ جاري التحميل...';
         try {
@@ -916,7 +1169,7 @@
             });
             coursesListDiv.innerHTML = html;
             document.querySelectorAll('.delete-course').forEach(btn => btn.addEventListener('click', async () => {
-                if (confirm('حذف الكورس؟')) { await deleteDoc(doc(db, "courses", btn.dataset.id)); loadCourses(); }
+                if (confirm('حذف الكورس؟')) { await deleteDoc(doc(db, "courses", btn.dataset.id)); loadCourses(); updateStats(); showToast('تم حذف الكورس', 'success'); }
             }));
         } catch(e) { coursesListDiv.innerHTML = '<p style="color:red;">خطأ</p>'; }
     }
@@ -934,7 +1187,7 @@
             });
             jobsListDiv.innerHTML = html;
             document.querySelectorAll('.delete-job').forEach(btn => btn.addEventListener('click', async () => {
-                if (confirm('حذف الوظيفة؟')) { await deleteDoc(doc(db, "jobs", btn.dataset.id)); loadJobs(); }
+                if (confirm('حذف الوظيفة؟')) { await deleteDoc(doc(db, "jobs", btn.dataset.id)); loadJobs(); updateStats(); showToast('تم حذف الوظيفة', 'success'); }
             }));
         } catch(e) { jobsListDiv.innerHTML = '<p style="color:red;">خطأ</p>'; }
     }
@@ -952,7 +1205,7 @@
             });
             contactsListDiv.innerHTML = html;
             document.querySelectorAll('.delete-contact').forEach(btn => btn.addEventListener('click', async () => {
-                if (confirm('حذف وسيلة التواصل؟')) { await deleteDoc(doc(db, "contactInfo", btn.dataset.id)); loadContacts(); }
+                if (confirm('حذف وسيلة التواصل؟')) { await deleteDoc(doc(db, "contactInfo", btn.dataset.id)); loadContacts(); updateStats(); showToast('تم الحذف', 'success'); }
             }));
         } catch(e) { contactsListDiv.innerHTML = '<p style="color:red;">خطأ</p>'; }
     }
@@ -972,11 +1225,11 @@
                     const courseSnap = await getDoc(courseRef);
                     if (courseSnap.exists()) courseTitle = courseSnap.data().title;
                 }
-                html += `<div class="item-card"><div>📋</div><div class="item-info"><strong>${escapeHtml(data.studentName)}</strong><br>الهاتف: ${escapeHtml(data.studentPhone)}<br>البريد: ${escapeHtml(data.studentEmail || 'غير موجود')}<br>الكورس: ${escapeHtml(courseTitle)}<br>ملاحظات: ${escapeHtml(data.note || 'لا توجد')}<br><small>${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small></div><button data-id="${docSnap.id}" class="delete-btn delete-reg">🗑️ حذف</button></div>`;
+                html += `<div class="item-card"><div>📋</div><div class="item-info"><strong>${escapeHtml(data.studentName)}</strong><br>📱 ${escapeHtml(data.studentPhone)}<br>✉️ ${escapeHtml(data.studentEmail || 'غير موجود')}<br>📚 ${escapeHtml(courseTitle)}<br>📝 ${escapeHtml(data.note || 'لا توجد')}<br><small>${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small></div><button data-id="${docSnap.id}" class="delete-btn delete-reg">🗑️ حذف</button></div>`;
             }
             registrationsListDiv.innerHTML = html;
             document.querySelectorAll('.delete-reg').forEach(btn => btn.addEventListener('click', async () => {
-                if (confirm('حذف هذا التسجيل؟')) { await deleteDoc(doc(db, "courseRegistrations", btn.dataset.id)); loadRegistrations(); }
+                if (confirm('حذف هذا التسجيل؟')) { await deleteDoc(doc(db, "courseRegistrations", btn.dataset.id)); loadRegistrations(); updateStats(); showToast('تم حذف التسجيل', 'success'); }
             }));
         } catch(e) { registrationsListDiv.innerHTML = '<p style="color:red;">خطأ</p>'; }
     }
@@ -996,15 +1249,74 @@
                     const jobSnap = await getDoc(jobRef);
                     if (jobSnap.exists()) jobTitle = jobSnap.data().title;
                 }
-                html += `<div class="item-card"><div>👤</div><div class="item-info"><strong>${escapeHtml(data.name)}</strong><br>الهاتف: ${escapeHtml(data.phone)}<br>الوظيفة: ${escapeHtml(jobTitle)}<br>السيرة: <a href="${escapeHtml(data.cv)}" target="_blank">${escapeHtml(data.cv)}</a><br><small>${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small></div><button data-id="${docSnap.id}" class="delete-btn delete-app">🗑️ حذف</button></div>`;
+                html += `<div class="item-card"><div>👤</div><div class="item-info"><strong>${escapeHtml(data.name)}</strong><br>📱 ${escapeHtml(data.phone)}<br>💼 ${escapeHtml(jobTitle)}<br>📄 <a href="${escapeHtml(data.cv)}" target="_blank">${escapeHtml(data.cv)}</a><br><small>${new Date(data.createdAt?.toDate()).toLocaleString('ar-EG')}</small></div><button data-id="${docSnap.id}" class="delete-btn delete-app">🗑️ حذف</button></div>`;
             }
             applicationsListDiv.innerHTML = html;
             document.querySelectorAll('.delete-app').forEach(btn => btn.addEventListener('click', async () => {
-                if (confirm('حذف هذا الطلب؟')) { await deleteDoc(doc(db, "applications", btn.dataset.id)); loadApplications(); }
+                if (confirm('حذف هذا الطلب؟')) { await deleteDoc(doc(db, "applications", btn.dataset.id)); loadApplications(); updateStats(); showToast('تم حذف الطلب', 'success'); }
             }));
         } catch(e) { applicationsListDiv.innerHTML = '<p style="color:red;">خطأ</p>'; }
     }
 
+    // ===== الإحصائيات =====
+    async function updateStats() {
+        try {
+            const [courses, registrations, applications, messages] = await Promise.all([
+                getDocs(collection(db, "courses")),
+                getDocs(collection(db, "courseRegistrations")),
+                getDocs(collection(db, "applications")),
+                getDocs(collection(db, "messages"))
+            ]);
+            document.getElementById('statCourses').textContent = courses.size;
+            document.getElementById('statRegistrations').textContent = registrations.size;
+            document.getElementById('statApplications').textContent = applications.size;
+            document.getElementById('statMessages').textContent = messages.size;
+        } catch(e) { console.error('Stats error:', e); }
+    }
+
+    // ===== الإشعارات (نشاطات حديثة) =====
+    async function loadNotifications() {
+        const list = document.getElementById('notificationsList');
+        list.innerHTML = '⏳ جاري التحميل...';
+        try {
+            const allData = [];
+            const collections = [
+                { name: 'courseRegistrations', label: 'تسجيل في كورس', icon: '📚' },
+                { name: 'applications', label: 'تقديم على وظيفة', icon: '💼' },
+                { name: 'messages', label: 'رسالة جديدة', icon: '✉️' }
+            ];
+            for (const coll of collections) {
+                const q = query(collection(db, coll.name), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    allData.push({
+                        type: coll.label,
+                        icon: coll.icon,
+                        text: data.name || data.studentName || 'مستخدم',
+                        time: data.createdAt?.toDate() || new Date(),
+                        id: doc.id
+                    });
+                });
+            }
+            allData.sort((a, b) => b.time - a.time);
+            const recent = allData.slice(0, 5);
+            if (recent.length === 0) {
+                list.innerHTML = '<p style="color:gray;">لا توجد نشاطات حديثة</p>';
+                return;
+            }
+            list.innerHTML = recent.map(item => `
+                <div class="notification-item">
+                    <span>${item.icon} ${item.type}: <strong>${escapeHtml(item.text)}</strong></span>
+                    <span class="time">${new Date(item.time).toLocaleString('ar-EG')}</span>
+                </div>
+            `).join('');
+        } catch(e) {
+            list.innerHTML = '<p style="color:red;">فشل تحميل النشاطات</p>';
+        }
+    }
+
+    // ===== إحصائيات الكورسات (متوسط التقييم) =====
     async function showStatistics() {
         statsListDiv.innerHTML = '<div style="text-align:center;">⏳ جاري التحميل...</div>';
         try {
@@ -1021,46 +1333,46 @@
                 const count = registrations.filter(reg => reg.courseId === courseId).length;
                 const courseRatings = ratings.filter(r => r.courseId === courseId);
                 const avgRating = courseRatings.length > 0 ? (courseRatings.reduce((sum, r) => sum + r.rating, 0) / courseRatings.length).toFixed(1) : 'لا توجد تقييمات';
-                html += `<div class="stats-card"><div><strong>${escapeHtml(course.title)}</strong></div><div>👨‍🎓 المسجلين: ${count} | ⭐ التقييم: ${avgRating}</div></div>`;
+                html += `<div class="stats-card"><div><strong>${escapeHtml(course.title)}</strong></div><div>👨‍🎓 ${count} | ⭐ ${avgRating}</div></div>`;
             }
             statsListDiv.innerHTML = html;
         } catch(e) { statsListDiv.innerHTML = '<p style="color:red;">خطأ</p>'; }
     }
 
-    // إضافة البيانات
+    // ===== إضافة البيانات =====
     addCourseBtn.addEventListener('click', async () => {
         const title = document.getElementById('courseTitle').value.trim();
         const desc = document.getElementById('courseDesc').value.trim();
         const price = document.getElementById('coursePrice').value.trim();
         const img = document.getElementById('courseImage').value.trim();
-        if (!title || !desc || !price) return alert('املأ الحقول الأساسية');
+        if (!title || !desc || !price) { showToast('املأ الحقول الأساسية', 'warning'); return; }
         await addDoc(collection(db, "courses"), { title, description: desc, price, imageUrl: img, createdAt: new Date() });
-        alert('تمت الإضافة');
+        showToast('تمت إضافة الكورس', 'success');
         document.getElementById('courseTitle').value = ''; document.getElementById('courseDesc').value = ''; document.getElementById('coursePrice').value = ''; document.getElementById('courseImage').value = '';
-        loadCourses();
+        loadCourses(); updateStats();
     });
 
     addJobBtn.addEventListener('click', async () => {
         const title = document.getElementById('jobTitle').value.trim();
         const req = document.getElementById('jobRequirements').value.trim();
         const deadline = document.getElementById('jobDeadline').value.trim();
-        if (!title || !req || !deadline) return alert('املأ الحقول');
+        if (!title || !req || !deadline) { showToast('املأ الحقول', 'warning'); return; }
         await addDoc(collection(db, "jobs"), { title, requirements: req, deadline, createdAt: new Date() });
-        alert('تمت الإضافة');
+        showToast('تمت إضافة الوظيفة', 'success');
         document.getElementById('jobTitle').value = ''; document.getElementById('jobRequirements').value = ''; document.getElementById('jobDeadline').value = '';
-        loadJobs();
+        loadJobs(); updateStats();
     });
 
     addContactBtn.addEventListener('click', async () => {
         const type = contactType.value;
         const value = contactValue.value.trim();
-        if (!value) return alert('أدخل القيمة');
+        if (!value) { showToast('أدخل القيمة', 'warning'); return; }
         await addDoc(collection(db, "contactInfo"), { type, value, createdAt: new Date() });
-        alert('تمت الإضافة');
-        contactValue.value = '';
-        loadContacts();
+        showToast('تمت الإضافة', 'success');
+        contactValue.value = ''; loadContacts(); updateStats();
     });
 
+    // ===== تأكيد التسجيل في كورس =====
     confirmRegistrationBtn.addEventListener('click', async () => {
         const courseId = selectedCourseId.value;
         const name = studentName.value.trim();
@@ -1070,9 +1382,12 @@
         if (!name || !phone) { regStatus.innerText = '❌ الاسم ورقم الهاتف مطلوبان'; return; }
         await addDoc(collection(db, "courseRegistrations"), { courseId, studentName: name, studentPhone: phone, studentEmail: email, note, createdAt: new Date() });
         regStatus.innerText = '✅ تم التسجيل';
-        setTimeout(() => registerCourseModal.style.display = 'none', 2000);
+        showToast('تم التسجيل بنجاح', 'success');
+        setTimeout(() => registerCourseModal.style.display = 'none', 1500);
+        updateStats();
     });
 
+    // ===== التصويت =====
     submitVoteBtn.addEventListener('click', async () => {
         const courseId = voteCourseId.value;
         const rating = parseInt(ratingValue.value);
@@ -1080,9 +1395,11 @@
         if (!rating || rating < 1 || rating > 5) { voteStatus.innerText = '❌ اختر تقييماً'; return; }
         await addDoc(collection(db, "ratings"), { courseId, rating, comment, createdAt: new Date() });
         voteStatus.innerText = '✅ شكراً';
-        setTimeout(() => voteModal.style.display = 'none', 2000);
+        showToast('تم تسجيل تقييمك', 'success');
+        setTimeout(() => voteModal.style.display = 'none', 1500);
     });
 
+    // ===== نجوم التقييم =====
     starSpans.forEach(span => {
         span.addEventListener('click', () => {
             const val = parseInt(span.dataset.value);
@@ -1092,48 +1409,58 @@
         });
     });
 
-    // تقديم طلب وظيفة (باستخدام رقم الهاتف)
+    // ===== تقديم طلب وظيفة =====
     submitApplicationBtn.addEventListener('click', async () => {
         const name = applicantName.value.trim();
         const phone = applicantPhone.value.trim();
         const jobId = selectedJobId.value;
         const cv = applicantCV.value.trim();
-        if (!name || !phone || !jobId || !cv) {
-            applicationStatus.innerText = '❌ جميع الحقول مطلوبة (الاسم، رقم الهاتف، الوظيفة، السيرة)';
-            return;
-        }
-        try {
-            await addDoc(collection(db, "applications"), {
-                name: name,
-                phone: phone,
-                jobId: jobId,
-                cv: cv,
-                createdAt: new Date()
-            });
-            applicationStatus.innerText = '✅ تم إرسال طلبك بنجاح';
-            applicantName.value = ''; applicantPhone.value = ''; selectedJobId.value = ''; applicantCV.value = '';
-            setTimeout(() => applicationStatus.innerText = '', 3000);
-        } catch (error) {
-            applicationStatus.innerText = '⚠️ حدث خطأ، حاول مرة أخرى';
-        }
+        if (!name || !phone || !jobId || !cv) { applicationStatus.innerText = '❌ جميع الحقول مطلوبة'; return; }
+        await addDoc(collection(db, "applications"), { name, phone, jobId, cv, createdAt: new Date() });
+        applicationStatus.innerText = '✅ تم الإرسال';
+        showToast('تم إرسال طلبك', 'success');
+        applicantName.value = ''; applicantPhone.value = ''; selectedJobId.value = ''; applicantCV.value = '';
+        setTimeout(() => applicationStatus.innerText = '', 3000);
+        updateStats();
     });
 
-    // إرسال رسالة
+    // ===== إرسال رسالة =====
     sendMessageBtn.addEventListener('click', async () => {
         const name = senderName.value.trim();
         const email = senderEmail.value.trim();
         const msg = senderMessage.value.trim();
-        if (!name || !email || !msg) {
-            messageStatus.innerText = '❌ جميع الحقول مطلوبة';
-            return;
-        }
+        if (!name || !email || !msg) { messageStatus.innerText = '❌ جميع الحقول مطلوبة'; return; }
         await addDoc(collection(db, "messages"), { name, email, message: msg, createdAt: new Date() });
-        messageStatus.innerText = '✅ تم إرسال رسالتك';
+        messageStatus.innerText = '✅ تم الإرسال';
+        showToast('تم إرسال رسالتك', 'success');
         senderName.value = ''; senderEmail.value = ''; senderMessage.value = '';
         setTimeout(() => messageStatus.innerText = '', 3000);
+        updateStats();
     });
 
-    // التنقل في لوحة المدير
+    // ===== البحث في الكورسات =====
+    searchCourses.addEventListener('input', (e) => {
+        const term = e.target.value.trim().toLowerCase();
+        if (!term) { renderCoursesPublic(allCoursesData); return; }
+        const filtered = allCoursesData.filter(c => 
+            c.title?.toLowerCase().includes(term) || 
+            c.description?.toLowerCase().includes(term)
+        );
+        renderCoursesPublic(filtered);
+    });
+
+    // ===== البحث في الوظائف =====
+    searchJobs.addEventListener('input', (e) => {
+        const term = e.target.value.trim().toLowerCase();
+        if (!term) { renderJobsPublic(allJobsData); return; }
+        const filtered = allJobsData.filter(j => 
+            j.title?.toLowerCase().includes(term) || 
+            j.requirements?.toLowerCase().includes(term)
+        );
+        renderJobsPublic(filtered);
+    });
+
+    // ===== التنقل في لوحة المدير =====
     manageCoursesBtn.onclick = () => {
         adminMainButtons.style.display = 'none';
         coursesSection.style.display = 'block';
@@ -1154,54 +1481,55 @@
     manageContactBtn.onclick = () => { adminMainButtons.style.display = 'none'; contactsSection.style.display = 'block'; loadContacts(); };
     backFromContactsBtn.onclick = () => { contactsSection.style.display = 'none'; adminMainButtons.style.display = 'grid'; };
 
-    // المصادقة (تسجيل الدخول)
+    // ===== المصادقة =====
     onAuthStateChanged(auth, (user) => {
         if (user) {
             showAdminPanel();
-            // إخفاء الأزرار الفرعية في الواجهة الرئيسية
             document.getElementById('servicesSubMenu').style.display = 'none';
+            servicesBtn.classList.remove('services-active');
+            arrow.classList.remove('open');
         } else {
             showPublicUI();
         }
     });
 
-    // أزرار الزوار (فتح المودالات)
     publicButtons.admin.addEventListener('click', () => {
         loginModal.style.display = 'flex';
         loginMessage.innerHTML = '';
     });
     closeModalBtn.addEventListener('click', () => loginModal.style.display = 'none');
-    window.onclick = (e) => {
+    window.addEventListener('click', (e) => {
         if (e.target === loginModal) loginModal.style.display = 'none';
         if (e.target === viewCoursesModal) viewCoursesModal.style.display = 'none';
         if (e.target === viewJobsModal) viewJobsModal.style.display = 'none';
         if (e.target === viewContactModal) viewContactModal.style.display = 'none';
         if (e.target === registerCourseModal) registerCourseModal.style.display = 'none';
         if (e.target === voteModal) voteModal.style.display = 'none';
-    };
+    });
 
     loginSubmit.onclick = async () => {
         const email = loginEmail.value.trim(), pwd = loginPassword.value.trim();
-        if (!email || !pwd) return loginMessage.innerText = 'أدخل البريد وكلمة السر';
+        if (!email || !pwd) { loginMessage.innerText = 'أدخل البريد وكلمة السر'; return; }
         loginMessage.innerText = 'جاري...';
         loginSubmit.disabled = true;
         try {
             await signInWithEmailAndPassword(auth, email, pwd);
             loginMessage.innerText = 'تم الدخول';
-            setTimeout(() => loginModal.style.display = 'none', 1200);
+            showToast('مرحباً مدير المركز', 'success');
+            setTimeout(() => loginModal.style.display = 'none', 1000);
         } catch(err) {
             loginMessage.innerText = err.code === 'auth/user-not-found' ? 'غير مسجل' : 'كلمة مرور خاطئة';
-        } finally {
-            loginSubmit.disabled = false;
-        }
+            showToast('فشل الدخول: ' + loginMessage.innerText, 'error');
+        } finally { loginSubmit.disabled = false; }
     };
 
     logoutBtn.onclick = async () => {
         await signOut(auth);
-        alert('تم الخروج');
+        showToast('تم تسجيل الخروج', 'info');
         location.reload();
     };
 
+    // ===== أزرار الزوار (فتح المودالات) =====
     publicButtons.courses.addEventListener('click', () => {
         viewCoursesModal.style.display = 'flex';
         displayCoursesPublic();
@@ -1220,15 +1548,9 @@
     closeRegisterModal.onclick = () => registerCourseModal.style.display = 'none';
     closeVoteModal.onclick = () => voteModal.style.display = 'none';
 
-    // زر التواصل الرئيسي (الموجود في الأزرار الثلاثة)
     document.getElementById('contactMainBtn').addEventListener('click', () => {
         viewContactModal.style.display = 'flex';
         displayContactInfoPublic();
-    });
-
-    // زر السياسة (رسالة مؤقتة)
-    document.getElementById('policyBtn').addEventListener('click', () => {
-        alert("📜 سياسة الخصوصية وشروط الاستخدام: سيتم إضافتها قريباً");
     });
 </script>
 </body>
